@@ -21,17 +21,16 @@ RSpec.describe 'Service API', type: :integration do
     let(:name) { SecureRandom.uuid }
     subject(:response) { client.create_service('name' => name) }
 
+    after(:each) do
+      client.delete_service(response['id'])
+    end
+
     it { is_expected.to include('name' => name) }
 
-    context 'with invalid name' do
-      let(:name) { '' }
-
-      it { is_expected.to include('errors' => { 'name' => ["can't be blank"] }) }
-    end
   end
 
   context '#show_proxy' do
-    it { expect(client.show_proxy(service_id).keys.size).to be >= 1 }
+    it { expect(client.read_proxy(service_id).keys.size).to be >= 1 }
   end
 
   context '#update_proxy' do
@@ -54,7 +53,12 @@ RSpec.describe 'Service API', type: :integration do
 
     it { expect(create).to include('http_method' => 'PUT') }
 
-    after { client.delete_mapping_rule(service_id, create.fetch('id')) }
+    after {
+      begin
+        client.delete_mapping_rule(service_id, create.fetch('id'))
+      rescue ThreeScale::API::HttpClient::NotFoundError
+      end
+    }
 
     context '#list_mapping_rules' do
       before { create }
@@ -70,7 +74,7 @@ RSpec.describe 'Service API', type: :integration do
     end
 
     context '#show_mapping_rule' do
-      subject(:show) { client.show_mapping_rule(service_id, create.fetch('id')) }
+      subject(:read) { client.show_mapping_rule(service_id, create.fetch('id')) }
       it { is_expected.to include('http_method' => 'PUT', 'pattern' => '/', 'metric_id' => metric_id, 'delta' => 2) }
     end
   end

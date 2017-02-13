@@ -1,4 +1,4 @@
-# ThreeScale::API
+# ThreeScale::API 
 
 
 This gem aims to expose all [3scale](http://3scale.net) APIs with a Ruby interface.
@@ -47,6 +47,19 @@ After checking out the repo, run `bin/setup` to install dependencies. You can al
 To run tests run `rake` or `rspec`.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Testing
+You need to have set these ENV variables:
+```bash
+ENDPOINT=               # Url to admin pages
+PROVIDER_KEY=           # Provider key
+SERVICE_ID=             # Echo service Id
+METRIC_ID=              # Metric Id
+APPLICATION_PLAN_ID=    # Application plan ID
+ACCOUNT_ID =            # Account id
+THREESCALE_NO_SSL       # IF set, no control ssl validity
+```
+
 
 ## Contributing
 

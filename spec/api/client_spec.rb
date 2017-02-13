@@ -22,7 +22,7 @@ RSpec.describe ThreeScale::API::Client do
   context '#create_service' do
     it do
       expect(http_client).to receive(:post)
-        .with('/admin/api/services', body: { service: {} })
+        .with('/admin/api/services', body: { })
         .and_return('service' => {})
       expect(client.create_service({})).to eq({})
     end
@@ -31,14 +31,14 @@ RSpec.describe ThreeScale::API::Client do
   context '#show_proxy' do
     it do
       expect(http_client).to receive(:get).with('/admin/api/services/42/proxy').and_return('proxy' => {})
-      expect(client.show_proxy(42)).to eq({})
+      expect(client.read_proxy(42)).to eq({})
     end
   end
 
   context '#update_proxy' do
     it do
       expect(http_client).to receive(:patch)
-        .with('/admin/api/services/42/proxy', body: { proxy: {} })
+        .with('/admin/api/services/42/proxy', body: {})
         .and_return('proxy' => {})
       expect(client.update_proxy(42, {})).to eq({})
     end
@@ -57,6 +57,16 @@ RSpec.describe ThreeScale::API::Client do
         .with('/admin/api/applications', params: { service_id: 42 })
         .and_return('applications' => [])
       expect(client.list_applications(service_id: 42)).to eq([])
+    end
+  end
+
+
+  context '#list_applications_for_account' do
+    it do
+      expect(http_client).to receive(:get)
+        .with('/admin/api/accounts/42/applications')
+        .and_return('applications' =>  [])
+      expect(client.list_applications_for_account(42)).to eq([])
     end
   end
 
@@ -99,14 +109,16 @@ RSpec.describe ThreeScale::API::Client do
                 name: 'foo',
                 description: 'foo description',
                 plan_id: 21,
-                'user_key' => 'foobar',
+                user_key: 'foobar',
                 applicaton_key: 'hex'
               })
-        .and_return('application' => { 'id' => 42 })
+        .and_return('application' => {id: 42 })
       expect(client.create_application(42,
-                                       plan_id: 21, name: 'foo', description: 'foo description',
-                                       'user_key' => 'foobar',
-                                       applicaton_key: 'hex')).to eq('id' => 42)
+                                       plan_id: 21,
+                                       name: 'foo',
+                                       description: 'foo description',
+                                       user_key: 'foobar',
+                                       applicaton_key: 'hex')).to eq(id: 42)
     end
   end
 
@@ -127,13 +139,13 @@ RSpec.describe ThreeScale::API::Client do
                                            username: 'foobar',
                                            email: 'foo@example.com',
                                            password: 'pass',
-                                           'billing_address_country' => 'Spain',
+                                           billing_address_country: 'Spain',
                                            billing_address_city: 'Barcelona' })
-        .and_return('account' => { 'id' => 42 })
-      expect(client.signup(name: 'foo', username: 'foobar', password: 'pass',
-                           billing_address_city: 'Barcelona', email: 'foo@example.com',
-                           'billing_address_country' => 'Spain'))
-        .to eq('id' => 42)
+        .and_return('account' => { id: 42 })
+      expect(client.sign_up(name: 'foo', username: 'foobar', password: 'pass',
+                            billing_address_city: 'Barcelona', email: 'foo@example.com',
+                            billing_address_country: 'Spain'))
+        .to eq(id: 42)
     end
   end
 
@@ -159,7 +171,7 @@ RSpec.describe ThreeScale::API::Client do
     it do
       expect(http_client).to receive(:post)
         .with('/admin/api/services/42/proxy/mapping_rules',
-              body: { mapping_rule: { http_method: 'GET' } })
+              body: {  http_method: 'GET' })
         .and_return('mapping_rule' => { 'http_method' => 'GET' })
       expect(client.create_mapping_rule(42, http_method: 'GET')).to eq('http_method' => 'GET')
     end
@@ -177,7 +189,7 @@ RSpec.describe ThreeScale::API::Client do
   context '#create_metric' do
     it do
       expect(http_client).to receive(:post)
-        .with('/admin/api/services/42/metrics', body: { metric: {} })
+        .with('/admin/api/services/42/metrics', body: {})
         .and_return('metric' => {})
       expect(client.create_metric(42, {})).to eq({})
     end
@@ -192,10 +204,10 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
-  context '#crete_method' do
+  context '#create_method' do
     it do
       expect(http_client).to receive(:post)
-        .with('/admin/api/services/42/metrics/21/methods', body: { metric: {} })
+        .with('/admin/api/services/42/metrics/21/methods', body: { })
         .and_return('method' => {})
       expect(client.create_method(42, 21, {})).to eq({})
     end
@@ -213,7 +225,7 @@ RSpec.describe ThreeScale::API::Client do
   context '#create_application_plan' do
     it do
       expect(http_client).to receive(:post)
-        .with('/admin/api/services/42/application_plans', body: { application_plan: {} })
+        .with('/admin/api/services/42/application_plans', body: { })
         .and_return('application_plan' => {})
       expect(client.create_application_plan(42, {})).to eq({})
     end
@@ -231,7 +243,7 @@ RSpec.describe ThreeScale::API::Client do
   context '#create_application_plan_limit' do
     it do
       expect(http_client).to receive(:post)
-        .with('/admin/api/application_plans/42/metrics/21/limits', body: { usage_limit: {} })
+        .with('/admin/api/application_plans/42/metrics/21/limits', body: { })
         .and_return('limit' => {})
       expect(client.create_application_plan_limit(42, 21, {})).to eq({})
     end

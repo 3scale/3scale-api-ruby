@@ -5,7 +5,7 @@ require 'net/http'
 module ThreeScale
   module API
     class HttpClient
-      attr_reader :endpoint, :admin_domain, :provider_key, :headers, :format
+      attr_reader :endpoint, :admin_domain, :provider_key, :headers, :format, :http
 
       def initialize(endpoint:, provider_key:, format: :json)
         @endpoint = URI(endpoint).freeze
@@ -13,6 +13,10 @@ module ThreeScale
         @provider_key = provider_key.freeze
         @http = Net::HTTP.new(admin_domain, @endpoint.port)
         @http.use_ssl = @endpoint.is_a?(URI::HTTPS)
+
+        if ENV['THREESCALE_NO_SSL'] != nil
+          @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
 
         @headers = {
           'Accept' => "application/#{format}",
@@ -55,8 +59,15 @@ module ThreeScale
         case response
         when Net::HTTPUnprocessableEntity, Net::HTTPSuccess then parser.decode(response.body)
         when Net::HTTPForbidden then forbidden!(response)
+        when Net::HTTPNotFound then not_found!(response)
         else "Can't handle #{response.inspect}"
         end
+      end
+
+      class NotFoundError < StandardError; end
+
+      def not_found!(response)
+        raise NotFoundError, response
       end
 
       class ForbiddenError < StandardError; end

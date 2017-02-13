@@ -9,3 +9,5 @@
 /spec/examples.txt
 /tmp/
 .env
+run_tests.sh
+/.idea/
