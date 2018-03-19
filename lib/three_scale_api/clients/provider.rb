@@ -24,6 +24,23 @@ module ThreeScaleApi
       def base_path
         super.concat '/users'
       end
+      
+      # @api public
+      # Sets role as admin
+      #
+      # @param [Fixnum] id User ID
+      def set_as_admin(id)
+        set_state(id, state: 'admin')
+      end
+
+      # @api public
+      # Sets role as member
+      #
+      # @param [Fixnum] id User ID
+      def set_as_member(id)
+        set_state(id, state: 'member')
+      end
+
     end
   end
 end
