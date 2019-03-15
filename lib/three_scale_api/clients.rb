@@ -12,6 +12,7 @@ require 'three_scale_api/clients/application_plan_limit'
 require 'three_scale_api/clients/pricing_rule'
 require 'three_scale_api/clients/oauth_admin_portal'
 require 'three_scale_api/clients/oauth_dev_portal'
+require 'three_scale_api/clients/policy_registry'
 
 module ThreeScaleApi
   # Clients of resources

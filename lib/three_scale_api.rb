@@ -127,6 +127,14 @@ module ThreeScaleApi
     def oauth_dev_portal
       @tenants ||= Clients::OAuthDevPortalClient.new(self)
     end
+
+    # @api public
+    # Gets policy registry manager instance
+    #
+    # @return [ThreeScaleApi::Clients::PolicyRegistryClient] Policy Registry manager instance
+    def policy_registry
+      @policy_registry ||= Clients::PolicyRegistryClient.new(self)
+    end
   end
 
   def self.new(**params)
