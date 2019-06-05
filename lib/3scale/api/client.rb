@@ -683,6 +683,13 @@ module ThreeScale
         true
       end
 
+      # @api public
+      # @return [Hash]
+      def show_provider
+        response = http_client.get('/admin/api/provider')
+        extract(entity: 'account', from: response)
+      end
+
       protected
 
       def extract(collection: nil, entity:, from:)
