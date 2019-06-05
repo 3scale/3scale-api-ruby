@@ -34,8 +34,8 @@ module ThreeScale
       # @api public
       # @return [Array<Hash>]
       # @param [Fixnum] service_id Service ID
-      def list_applications(service_id: nil)
-        params = service_id ? { service_id: service_id } : nil
+      def list_applications(service_id: nil, plan_id: nil)
+        params = { service_id: service_id, plan_id: plan_id }.compact
         response = http_client.get('/admin/api/applications', params: params)
         extract(collection: 'applications', entity: 'application', from: response)
       end
