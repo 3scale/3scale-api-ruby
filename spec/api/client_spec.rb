@@ -901,4 +901,32 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.delete_policy_registry(200)).to eq(true)
     end
   end
+
+  context '#show_provider' do
+    let(:provider) do
+      {
+          'id' => 1,
+          'created_at' => '2019-06-05T10:17:15Z',
+          'updated_at' => '2019-06-05T10:17:17Z',
+          'admin_domain' => 'master-account.example.com',
+          'domain' => 'master-account.example.com',
+          'from_email' => 'no-reply@example.net',
+          'site_access_code' => '',
+          'credit_card_stored' => false,
+          'monthly_billing_enabled' => true,
+          'monthly_charging_enabled' => true,
+          'state' => 'approved',
+          'links' => [{'rel'=>'users', 'href'=>'http://master-account.example.com/admin/api/accounts/1/users'}],
+          'org_name' => 'Master Account'
+      }
+    end
+
+    let(:response_body) { { 'account' => provider } }
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/provider')
+                                 .and_return(response_body)
+      expect(client.show_provider).to eq(provider)
+    end
+  end
+
 end

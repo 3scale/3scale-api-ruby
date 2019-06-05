@@ -5,6 +5,9 @@ This file tries to follow recommendations of [Keep a CHANGELOG](http://keepachan
 
 ## [Unreleased]
 
+### Added
+- Provider Account read
+
 ## [0.4.0] - 2019-05-13
 
 ### Added
