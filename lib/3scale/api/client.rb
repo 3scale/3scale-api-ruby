@@ -458,6 +458,14 @@ module ThreeScale
       end
 
       # @api public
+      # @param [Fixnum] id Account Id
+      # @return [Hash]
+      def show_account(id)
+        response = http_client.get("/admin/api/accounts/#{id}")
+        extract(entity: 'account', from: response)
+      end
+
+      # @api public
       # @return [Array]
       # @param [Fixnum] id Service ID
       def show_policies(id)
