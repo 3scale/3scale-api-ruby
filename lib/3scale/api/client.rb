@@ -645,6 +645,108 @@ module ThreeScale
       end
 
       # @api public
+      # @param [Fixnum] account_id Account ID
+      # @param [String] state State
+      # @param [String] role Role
+      # @return [Array<Hash>]
+      def list_users(account_id, state: nil, role: nil)
+        params = { state: state, role: role }.reject { |_, value| value.nil? }
+        response = http_client.get("/admin/api/accounts/#{account_id}/users", params: params)
+        extract(collection: 'users', entity: 'user', from: response)
+      end
+
+      # @api public
+      # @param [String] account_id Account ID
+      # @param [String] email User email
+      # @param [String] username User Username
+      # @param [String] password User password
+      # @param [Hash] attributes User Attributes
+      # @return [Hash]
+      def create_user(account_id:, email:, username:, password:, **rest)
+        body = { email: email, username: username, password: password }.merge(rest)
+        response = http_client.post("/admin/api/accounts/#{account_id}/users", body: body)
+        extract(entity: 'user', from: response)
+      end
+
+      # @api public
+      # @param [String] account_id Account ID
+      # @param [String] user_id User ID
+      # @return [Hash]
+      def activate_user(account_id, user_id)
+        response = http_client.put("/admin/api/accounts/#{account_id}/users/#{user_id}/activate")
+        extract(entity: 'user', from: response)
+      end
+
+      # @api public
+      # @param [String] account_id Account ID
+      # @return [Hash]
+      def approve_account(account_id)
+        response = http_client.put("/admin/api/accounts/#{account_id}/approve")
+        extract(entity: 'account', from: response)
+      end
+
+      # @api public
+      # @param [String] account_id Account ID
+      # @return [Array<Hash>]
+      def list_account_applications(account_id)
+        response = http_client.get("/admin/api/accounts/#{account_id}/applications")
+        extract(collection: 'applications', entity: 'application', from: response)
+      end
+
+      # @api public 
+      # @return [Array<Hash]
+      def list_application_plans
+        response = http_client.get("/admin/api/application_plans")
+        extract(collection: 'plans', entity: 'application_plan', from: response)
+      end
+
+      # @api public
+      # @param [String] account_id Account ID
+      # @param [String] application_id Application ID
+      # @return [Array<Hash>]
+      def list_application_keys(account_id, application_id)
+        response = http_client.get("/admin/api/accounts/#{account_id}/applications/#{application_id}/keys")
+        extract(collection: 'keys', entity: 'key', from: response)
+      end
+
+      # @api public
+      # @param [String] account_id Account ID
+      # @param [String] application_id Application ID
+      # @param [String] key Key
+      # @return [Hash]
+      def create_application_key(account_id, application_id, key)
+        response = http_client.post("/admin/api/accounts/#{account_id}/applications/#{application_id}/keys", body: {key: key})
+        extract(entity: 'application', from: response)
+      end
+
+      # @api public
+      # @param [String] account_id Account ID
+      # @param [String] application_id Application ID
+      # @return [Hash] application Application
+      def accept_application(account_id, application_id)
+        response = http_client.put("/admin/api/accounts/#{account_id}/applications/#{application_id}/accept")
+        extract(entity: 'application', from: response)
+      end
+
+      # @api public
+      # @param [String] account_id Account ID
+      # @param [String] application_id Application ID
+      # @return [Hash] application Application
+      def suspend_application(account_id, application_id)
+        response = http_client.put("/admin/api/accounts/#{account_id}/applications/#{application_id}/suspend")
+        extract(entity: 'application', from: response)
+      end
+      
+      # @api public
+      # @param [String] account_id Account ID
+      # @param [String] application_id Application ID
+      # @return [Hash] application Application
+      def resume_application(account_id, application_id)
+        response = http_client.put("/admin/api/accounts/#{account_id}/applications/#{application_id}/resume")
+        extract(entity: 'application', from: response)
+      end
+
+      # @api public
       # @return [Array<Hash>]
       def list_policy_registry
         response = http_client.get('/admin/api/registry/policies')

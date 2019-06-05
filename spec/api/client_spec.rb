@@ -836,6 +836,142 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
+  context '#list_users' do
+    let(:account_id) { '1' }
+    it do
+      expect(http_client).to receive(:get)
+        .with("/admin/api/accounts/#{account_id}/users", params: {})
+        .and_return('users' => [])
+      expect(client.list_users(account_id)).to eq([])
+    end
+
+    it 'filters by role' do
+      expect(http_client).to receive(:get)
+        .with("/admin/api/accounts/#{account_id}/users", params: { role: 'admin' })
+        .and_return('users' => [])
+      expect(client.list_users(account_id, role: 'admin')).to eq([])
+    end
+
+    it 'filters by state' do
+      expect(http_client).to receive(:get)
+        .with("/admin/api/accounts/#{account_id}/users", params: { state: 'active' })
+        .and_return('users' => [])
+      expect(client.list_users(account_id, state: 'active')).to eq([])
+    end
+
+    it 'filters by state and role' do
+      expect(http_client).to receive(:get)
+        .with("/admin/api/accounts/#{account_id}/users", params: {state: 'pending', role: 'member'})
+        .and_return('users' => [])
+      expect(client.list_users(account_id, state: 'pending', role: 'member')).to eq([])
+    end
+  end
+
+  context '#create_user' do
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/accounts/42/users', body: {
+                username: 'foo',
+                email: 'foo@bar.com',
+                password: 'foobar'
+              })
+        .and_return('user' => { 'id' => 42 })
+      expect(client.create_user(account_id: 42,
+                                       username: 'foo', email: 'foo@bar.com',
+                                       password: 'foobar')).to eq('id' => 42)
+    end
+  end
+
+  context '#approve_account' do
+    it do
+      expect(http_client).to receive(:put)
+        .with('/admin/api/accounts/42/approve')
+        .and_return('account' => {'id' => 42})
+      expect(client.approve_account(42)).to eq({'id' => 42})
+    end
+  end
+
+  context '#active_user' do 
+    let(:account_id) { '42' }
+    let(:user_id) { '1' }
+    it do 
+      expect(http_client).to receive(:put)
+        .with("/admin/api/accounts/#{account_id}/users/#{user_id}/activate")
+        .and_return('user' => {'id' => user_id})
+      expect(client.activate_user(account_id, user_id)).to eq({'id' => user_id})
+    end
+  end
+
+  context '#list_account_applications' do 
+    let(:account_id) { '1' }
+    it do 
+      expect(http_client).to receive(:get)
+        .with("/admin/api/accounts/#{account_id}/applications")
+        .and_return('applications' => [])
+      expect(client.list_account_applications(account_id)).to eq([])
+    end
+  end
+
+  context '#list_application_plans' do 
+    it do 
+      expect(http_client).to receive(:get)
+        .with('/admin/api/application_plans')
+        .and_return('plans' => [])
+      expect(client.list_application_plans).to eq([])
+    end
+  end
+
+  context '#list_application_keys' do 
+    let(:account_id) { '1' }
+    let(:application_id) { '42' }
+
+    it do 
+      expect(http_client).to receive(:get)
+        .with("/admin/api/accounts/#{account_id}/applications/#{application_id}/keys")
+        .and_return('keys' => [])
+      expect(client.list_application_keys(account_id, application_id)).to eq([])
+    end
+  end
+
+  context '#create_application_key' do 
+    let(:account_id) { '1' }
+    let(:application_id) { '42' }
+    let(:key) { 'foo' }
+
+    it do 
+      expect(http_client).to receive(:post)
+        .with("/admin/api/accounts/#{account_id}/applications/#{application_id}/keys", body: {key: key})
+        .and_return('application' => {'id' => application_id})
+      expect(client.create_application_key(account_id, application_id, key)).to eq({'id' => application_id})
+    end
+  end
+
+  context '#change_application_state' do 
+    let(:account_id) { '1' }
+    let(:application_id) { '42' }
+
+    it 'accept_application' do 
+      expect(http_client).to receive(:put)
+        .with("/admin/api/accounts/#{account_id}/applications/#{application_id}/accept")
+        .and_return('application' => {'id' => application_id})
+      expect(client.accept_application(account_id, application_id)).to eq({'id' => application_id})
+    end
+
+    it 'suspend_application' do 
+      expect(http_client).to receive(:put)
+        .with("/admin/api/accounts/#{account_id}/applications/#{application_id}/suspend")
+        .and_return('application' => {'id' => application_id})
+      expect(client.suspend_application(account_id, application_id)).to eq({'id' => application_id})
+    end
+
+    it 'resume_application' do 
+      expect(http_client).to receive(:put)
+        .with("/admin/api/accounts/#{account_id}/applications/#{application_id}/resume")
+        .and_return('application' => {'id' => application_id})
+      expect(client.resume_application(account_id, application_id)).to eq({'id' => application_id})
+    end
+  end
+
   context '#list_policy_registry' do
     let(:policy_registry_a) { { 'id' => 1 } }
     let(:policy_registry_b) { { 'id' => 2 } }
