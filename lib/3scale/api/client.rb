@@ -157,7 +157,7 @@ module ThreeScale
       # @return [Hash]
       # @param [Fixnum] service_id Service ID
       # @param [String] environment. Must be 'sandbox' or 'production'
-      # @param [Fixnum] proxy configuration version
+      # @param [Fixnum] version Version to promote
       def show_proxy_config(service_id, environment, version)
         response = http_client.get("/admin/api/services/#{service_id}/proxy/configs/#{environment}/#{version}")
         extract(entity: 'proxy_config', from: response)
@@ -166,9 +166,9 @@ module ThreeScale
       # @api public
       # @return [Hash]
       # @param [Fixnum] service_id Service ID
-      # @param [String] environment. Must be 'sandbox' or 'production'
-      # @param [Fixnum] proxy configuration version to promote
-      # @param [Fixnum] proxy configuration to which the specified proxy configuration will be promoted to
+      # @param [String] environment Must be 'sandbox' or 'production'
+      # @param [Fixnum] version Version to promote
+      # @param [Fixnum] to To which the specified proxy configuration will be promoted to
       def promote_proxy_config(service_id, environment, version, to)
         response = http_client.post("/admin/api/services/#{service_id}/proxy/configs/#{environment}/#{version}/promote",
                                     body: { to: to })
@@ -291,7 +291,7 @@ module ThreeScale
 
       # @api public
       # @param [Fixnum] service_id Service ID
-      # @param [Fixnum] id Parent metric ID
+      # @param [Fixnum] parent_id Parent metric ID
       # @param [Fixnum] id Method ID
       # @return [Hash]
       def show_method(service_id, parent_id, id)
@@ -336,7 +336,7 @@ module ThreeScale
       # @return [Bool]
       # @param [Fixnum] service_id Service ID
       # @param [Fixnum] parent_id Parent metric ID
-      # @param [Fixnum] metric_id Metric ID
+      # @param [Fixnum] id Metric ID
       def delete_method(service_id, parent_id, id)
         http_client.delete("/admin/api/services/#{service_id}/metrics/#{parent_id}/methods/#{id}")
         true
@@ -372,7 +372,7 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Fixnum] id Service ID
+      # @param [Fixnum] service_id Service ID
       # @param [Fixnum] id Application Plan ID
       # @return [Hash]
       def show_application_plan(service_id, id)
@@ -450,7 +450,7 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Hash] account criteria
+      # @param [Hash] criteria Search parameters
       # @return [Hash]
       def find_account(criteria)
         response = http_client.get('/admin/api/accounts/find', params: criteria)
@@ -537,7 +537,7 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Fixnum] account_id Account ID
+      # @param [Fixnum] id Account ID
       # @return [Bool]
       def delete_account(id)
         http_client.delete("/admin/api/accounts/#{id}")
@@ -546,7 +546,7 @@ module ThreeScale
 
       # @api public
       # @param [Fixnum] account_id Account ID
-      # @param [Fixnum] application_id Application ID
+      # @param [Fixnum] id Application ID
       # @return [Bool]
       def delete_application(account_id, id)
         http_client.delete("/admin/api/accounts/#{account_id}/applications/#{id}")
@@ -554,7 +554,7 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Fixnum] id Service ID
+      # @param [Fixnum] service_id Service ID
       # @return [Array<Hash>]
       def show_oidc(service_id)
         response = http_client.get("/admin/api/services/#{service_id}/proxy/oidc_configuration")
@@ -562,7 +562,7 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Fixnum] id Service ID
+      # @param [Fixnum] service_id Service ID
       # @return [Hash]
       def update_oidc(service_id, attributes)
         response = http_client.patch("/admin/api/services/#{service_id}/proxy/oidc_configuration",
