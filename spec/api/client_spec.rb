@@ -124,7 +124,7 @@ RSpec.describe ThreeScale::API::Client do
   context '#list_applications' do
     it do
       expect(http_client).to receive(:get)
-        .with('/admin/api/applications', params: nil)
+        .with('/admin/api/applications', params: {})
         .and_return('applications' => [])
       expect(client.list_applications).to eq([])
     end
@@ -134,6 +134,13 @@ RSpec.describe ThreeScale::API::Client do
         .with('/admin/api/applications', params: { service_id: 42 })
         .and_return('applications' => [])
       expect(client.list_applications(service_id: 42)).to eq([])
+    end
+
+    it 'filters by plan_id' do
+      expect(http_client).to receive(:get)
+        .with('/admin/api/applications', params: { plan_id: 99 })
+        .and_return('applications' => [])
+      expect(client.list_applications(plan_id: 99)).to eq([])
     end
   end
 
@@ -184,6 +191,21 @@ RSpec.describe ThreeScale::API::Client do
                                        plan_id: 21, name: 'foo', description: 'foo description',
                                        'user_key' => 'foobar',
                                        applicaton_key: 'hex')).to eq('id' => 42)
+    end
+  end
+
+  context '#update_application' do
+    let(:account_id) { 200 }
+    let(:id) { 1000 }
+    let(:app_attrs) { { 'name' => 'new name' } }
+    let(:application) { app_attrs.merge('id' => id) }
+    let(:response_body) { { 'application' => application } }
+
+    it do
+      expect(http_client).to receive(:put)
+        .with("/admin/api/accounts/#{account_id}/applications/#{id}", body: app_attrs)
+        .and_return(response_body)
+      expect(client.update_application(account_id, id, app_attrs)).to eq(application)
     end
   end
 
@@ -659,6 +681,18 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
+  context '#show_account' do
+    let(:account_id) { 1 }
+    let(:account) { { 'id' => account_id } }
+    let(:response_body) { { 'account' => account } }
+
+    it do
+      expect(http_client).to receive(:get).with("/admin/api/accounts/#{account_id}")
+                                          .and_return(response_body)
+      expect(client.show_account(account_id)).to eq(account)
+    end
+  end
+
   context '#delete_application' do
     it do
       expect(http_client).to receive(:delete).with('/admin/api/accounts/1/applications/10')
@@ -891,10 +925,10 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
-  context '#active_user' do 
+  context '#active_user' do
     let(:account_id) { '42' }
     let(:user_id) { '1' }
-    it do 
+    it do
       expect(http_client).to receive(:put)
         .with("/admin/api/accounts/#{account_id}/users/#{user_id}/activate")
         .and_return('user' => {'id' => user_id})
@@ -902,9 +936,9 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
-  context '#list_account_applications' do 
+  context '#list_account_applications' do
     let(:account_id) { '1' }
-    it do 
+    it do
       expect(http_client).to receive(:get)
         .with("/admin/api/accounts/#{account_id}/applications")
         .and_return('applications' => [])
@@ -912,8 +946,8 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
-  context '#list_application_plans' do 
-    it do 
+  context '#list_application_plans' do
+    it do
       expect(http_client).to receive(:get)
         .with('/admin/api/application_plans')
         .and_return('plans' => [])
@@ -921,11 +955,11 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
-  context '#list_application_keys' do 
+  context '#list_application_keys' do
     let(:account_id) { '1' }
     let(:application_id) { '42' }
 
-    it do 
+    it do
       expect(http_client).to receive(:get)
         .with("/admin/api/accounts/#{account_id}/applications/#{application_id}/keys")
         .and_return('keys' => [])
@@ -933,12 +967,12 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
-  context '#create_application_key' do 
+  context '#create_application_key' do
     let(:account_id) { '1' }
     let(:application_id) { '42' }
     let(:key) { 'foo' }
 
-    it do 
+    it do
       expect(http_client).to receive(:post)
         .with("/admin/api/accounts/#{account_id}/applications/#{application_id}/keys", body: {key: key})
         .and_return('application' => {'id' => application_id})
@@ -946,25 +980,25 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
-  context '#change_application_state' do 
+  context '#change_application_state' do
     let(:account_id) { '1' }
     let(:application_id) { '42' }
 
-    it 'accept_application' do 
+    it 'accept_application' do
       expect(http_client).to receive(:put)
         .with("/admin/api/accounts/#{account_id}/applications/#{application_id}/accept")
         .and_return('application' => {'id' => application_id})
       expect(client.accept_application(account_id, application_id)).to eq({'id' => application_id})
     end
 
-    it 'suspend_application' do 
+    it 'suspend_application' do
       expect(http_client).to receive(:put)
         .with("/admin/api/accounts/#{account_id}/applications/#{application_id}/suspend")
         .and_return('application' => {'id' => application_id})
       expect(client.suspend_application(account_id, application_id)).to eq({'id' => application_id})
     end
 
-    it 'resume_application' do 
+    it 'resume_application' do
       expect(http_client).to receive(:put)
         .with("/admin/api/accounts/#{account_id}/applications/#{application_id}/resume")
         .and_return('application' => {'id' => application_id})
@@ -1064,5 +1098,4 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.show_provider).to eq(provider)
     end
   end
-
 end
