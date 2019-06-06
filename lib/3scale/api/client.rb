@@ -74,6 +74,16 @@ module ThreeScale
       end
 
       # @api public
+      # @param [Fixnum] account_id Account ID
+      # @param [Fixnum] id Application ID
+      # @param [Hash] attrs Application Attributes
+      # @return [Hash] an Application
+      def update_application(account_id, id, attrs)
+        response = http_client.put("/admin/api/accounts/#{account_id}/applications/#{id}", body: attrs)
+        extract(entity: 'application', from: response)
+      end
+
+      # @api public
       # @return [Hash] a Plan
       # @param [Fixnum] account_id Account ID
       # @param [Fixnum] application_id Application ID
