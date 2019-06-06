@@ -32,10 +32,11 @@ module ThreeScale
       end
 
       # @api public
-      # @return [Array<Hash>]
       # @param [Fixnum] service_id Service ID
-      def list_applications(service_id: nil)
-        params = service_id ? { service_id: service_id } : nil
+      # @param [Fixnum] plan_id Application Plan ID
+      # @return [Array<Hash>]
+      def list_applications(service_id: nil, plan_id: nil)
+        params = { service_id: service_id, plan_id: plan_id }.compact
         response = http_client.get('/admin/api/applications', params: params)
         extract(collection: 'applications', entity: 'application', from: response)
       end
@@ -70,6 +71,16 @@ module ThreeScale
       def create_application(account_id, attributes = {}, plan_id:, **rest)
         body = { plan_id: plan_id }.merge(attributes).merge(rest)
         response = http_client.post("/admin/api/accounts/#{account_id}/applications", body: body)
+        extract(entity: 'application', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] account_id Account ID
+      # @param [Fixnum] id Application ID
+      # @param [Hash] attrs Application Attributes
+      # @return [Hash] an Application
+      def update_application(account_id, id, attrs)
+        response = http_client.put("/admin/api/accounts/#{account_id}/applications/#{id}", body: attrs)
         extract(entity: 'application', from: response)
       end
 
@@ -454,6 +465,14 @@ module ThreeScale
       # @return [Hash]
       def find_account(criteria)
         response = http_client.get('/admin/api/accounts/find', params: criteria)
+        extract(entity: 'account', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Account Id
+      # @return [Hash]
+      def show_account(id)
+        response = http_client.get("/admin/api/accounts/#{id}")
         extract(entity: 'account', from: response)
       end
 
