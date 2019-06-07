@@ -5,8 +5,31 @@ This file tries to follow recommendations of [Keep a CHANGELOG](http://keepachan
 
 ## [Unreleased]
 
+## [0.5.0] - 2019-06-07
+
 ### Added
 - Provider Account read
+- Account read
+- Application update
+- Policy Registry methods
+- User list
+- User create
+- User activate
+- Account approve
+- Account applications list
+- Application plan applications list
+- Application keys list
+- Application key create
+- Application accept
+- Application suspend
+- Application resume
+- ProxyConfig show
+- ProxyConfig promote
+
+### Fixed
+
+- ProxyConfig list
+- ProxyConfig latest
 
 ## [0.4.0] - 2019-05-13
 
@@ -117,7 +140,8 @@ This file tries to follow recommendations of [Keep a CHANGELOG](http://keepachan
 - Application Plans List & Create
 - Usage Limits List, Create & Delete
 
-[Unreleased]: https://github.com/3scale/3scale-api-ruby/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/3scale/3scale-api-ruby/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v0.5.0
 [0.4.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v0.4.0
 [0.3.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v0.3.0
 [0.2.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v0.2.0
