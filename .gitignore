@@ -8,4 +8,5 @@
 /spec/reports/
 /spec/examples.txt
 /tmp/
+/vendor/
 .env

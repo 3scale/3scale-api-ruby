@@ -168,6 +168,13 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.find_application(user_key: 'hex')).to eq('user_key' => 'hex')
     end
 
+    it 'finds by user_key and service_id' do
+      expect(http_client).to receive(:get)
+        .with('/admin/api/applications/find', params: { user_key: 'hex', service_id: 100 })
+        .and_return('application' => { 'user_key' => 'hex' })
+      expect(client.find_application(user_key: 'hex', service_id: 100)).to eq('user_key' => 'hex')
+    end
+
     it 'finds by app_id' do
       expect(http_client).to receive(:get)
         .with('/admin/api/applications/find', params: { app_id: 'hex' })
