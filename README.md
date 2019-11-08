@@ -47,23 +47,38 @@ interactive prompt that will allow you to experiment.
 
 ## Testing
 
-To run tests run `rake` or `rspec`.
+To run tests run `rake` or `rspec` in the context of the bundle using:
+`bundle exec rake` or `bundle exec rspec`
 
 There are two kinds of tests: unit (see [spec/api](spec/api)) and integration (see [spec/integration](spec/integration)).
 
-For running the integration tests you will need to have a real 3scale account, you can set the details of the account 
-via environment variables. 
-The easiest way to set everything up is it to have a `.env` file in the root of the project with the following 
+### Setting up Integration Testing
+The integration tests run against an instance of 3scale (using the API Manager). 
+To run them you will need to have a 3scale account on that 3scale instance. 
+You pass the account credentials to the Integration tests via environment variables, 
+consisting of the `ENDPOINT` which is your Admin Console login URL, and `PROVIDER_KEY`.
+
+The value for `PROVIDER_KEY` can be either a true provider key, or an access token. 
+
+You can find the provider key for your account in the Account Settings area (cog icon at top right of UI) of the 
+Admin Console when you are logged-in to your 3scale account on the instance. 
+We recommend use of an access token as it can be more easily revoked. 
+Access tokens can be created in the Account Settings area, under the Personal > Tokens area.
+
+Once you have those values, the easiest way to set everything up is it to have a `.env` file in the root of the project with the following 
 environment variables (set your own values):
 
 ```
 ENDPOINT=https://your-domain-admin.3scale.net
 PROVIDER_KEY=abc123
-VERIFY_SSL=true (by default true)
+VERIFY_SSL=true # is 'true' by default
 ```
 
-**Note:** for the tests to pass the following requirements need to be met:
-- the field `billing_address` should be added to the Account model in **Settings > Fields Definitions**
+**Note:** Any value already set in your environment (exported to all sessions or previously set in the terminal session you are 
+running the tests from) will take precedence over the values loaded from the `.env` file. So if you have either `PROVIDER_KEY` or
+`ENDPOINT` set you should `unset` them before attempting to run the tests.
+
+**Note:** for the tests to pass the field `billing_address` should be configured in your Account Settings in your 3scale account.
 
 To install this gem onto your local machine, run `bundle exec rake install`. 
 To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, 
