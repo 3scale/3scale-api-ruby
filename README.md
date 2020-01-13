@@ -78,7 +78,10 @@ VERIFY_SSL=true # is 'true' by default
 running the tests from) will take precedence over the values loaded from the `.env` file. So if you have either `PROVIDER_KEY` or
 `ENDPOINT` set you should `unset` them before attempting to run the tests.
 
-**Note:** for the tests to pass the field `billing_address` should be configured in your Account Settings in your 3scale account.
+**Note:** for the tests to pass the field `billing_address` should exist the 3scale account you are using to test. Test signups
+are made against this account and the ability to configure the billing_address field of new signups is tested. To create this field, 
+open the admin API of the account used for testing, select "Audience" and then in the "Accounts > Field Definitions" page create a new
+field called `billing_address` in the `Account` section.
 
 To install this gem onto your local machine, run `bundle exec rake install`. 
 To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, 
