@@ -157,7 +157,7 @@ module ThreeScale
       # @return [Hash]
       # @param [Fixnum] service_id Service ID
       # @param [String] environment. Must be 'sandbox' or 'production'
-      # @param [Fixnum] version Version to promote
+      # @param [Fixnum] version Proxy configuration version
       def show_proxy_config(service_id, environment, version)
         response = http_client.get("/admin/api/services/#{service_id}/proxy/configs/#{environment}/#{version}")
         extract(entity: 'proxy_config', from: response)
