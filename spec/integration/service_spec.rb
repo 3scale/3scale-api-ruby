@@ -10,7 +10,7 @@ RSpec.describe 'Service API', type: :integration do
   end
 
   context '#create_service' do
-    let(:name) { "3scale ruby test #{SecureRandom.uuid}" }
+    let(:name) { "#{SecureRandom.hex(16)}" }
     subject(:response) { client.create_service('name' => name) }
 
     after :each do
@@ -27,7 +27,7 @@ RSpec.describe 'Service API', type: :integration do
   end
 
   context '#update_service' do
-    let(:name) { "3scale ruby test #{SecureRandom.uuid}" }
+    let(:name) { "#{SecureRandom.hex(16)}" }
     subject(:response) { client.update_service(@service_test['id'], 'name' => name) }
 
     it { is_expected.to include('name' => name) }
@@ -151,7 +151,7 @@ RSpec.describe 'Service API', type: :integration do
   end
 
   context '#delete_service' do
-    let(:service_name) { "3scale ruby test #{SecureRandom.uuid}" }
+    let(:service_name) { "#{SecureRandom.hex(16)}" }
     let(:new_service) { client.create_service name: service_name }
 
     it 'service is deleted' do
