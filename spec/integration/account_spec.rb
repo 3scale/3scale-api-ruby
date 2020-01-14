@@ -68,7 +68,7 @@ RSpec.describe 'Account API', type: :integration do
     context 'on app_id, app_key service' do
       let(:service) do
         @apiclient.create_service(
-          'name' => "3scalerubytest#{SecureRandom.uuid}",
+          'name' => "#{SecureRandom.hex(16)}",
           'backend_version': '2'
         )
       end
@@ -77,7 +77,7 @@ RSpec.describe 'Account API', type: :integration do
       end
       let(:application_plan) do
         @apiclient.create_application_plan(service['id'],
-                                           'name' => "3scale ruby test #{SecureRandom.uuid}")
+                                           'name' => "#{SecureRandom.hex(16)}")
       end
       let(:app_id) { SecureRandom.hex(14) }
       let!(:application) do
