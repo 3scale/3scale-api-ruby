@@ -1,0 +1,67 @@
+version: 2.1
+
+commands:
+  install_dependencies:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies
+
+      - run:
+          name: Install dependencies
+          command: |
+            bundle install --jobs=3 --retry=3 --path vendor/bundle
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+          paths:
+            - ./vendor/bundle
+
+  unittests:
+    steps:
+      - install_dependencies
+      - run:
+          name: Run unittests
+          command: |
+            bundle exec rake
+jobs:
+  ruby-255-unittest:
+    docker:
+      - image: circleci/ruby:2.5.5
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - unittests
+
+  ruby-262-unittest:
+    docker:
+      - image: circleci/ruby:2.6.2
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - unittests
+
+workflows:
+  version: 2
+  tests:
+    jobs:
+      - ruby-255-unittest:
+          context: autotestaccount
+      - ruby-262-unittest:
+          context: autotestaccount
+
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - ruby-255-unittest:
+          context: autotestaccount
+      - ruby-262-unittest:
+          context: autotestaccount
