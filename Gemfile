@@ -8,4 +8,5 @@ group :development do
   gem 'dotenv'
   gem 'pry-byebug', platform: :mri
   gem 'yard'
+  gem 'rspec'
 end
