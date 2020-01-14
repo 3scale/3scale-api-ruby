@@ -1105,4 +1105,99 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.show_provider).to eq(provider)
     end
   end
+
+  context '#list_cms_sections' do
+    let(:root_section) do
+      {
+        'id' => 1710395,
+        'created_at' => '2014-10-17T12:45:25+04:00',
+        'title' => 'Root',
+        'partial_path' => 'root',
+        'public' => true,
+        'updated_at' => '2016-08-18T18:16:39+03:00',
+        'system_name' => 'root'
+      }
+    end
+
+    let(:sections) do
+      {
+          'sections' => [
+              {
+                  'section' => root_section
+              }
+          ]
+      }
+    end
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/cms/sections', {:params => {:page => 1, :per_page => 100}})
+                                 .and_return(sections)
+      expect(client.list_cms(:section, 1)).to match_array([root_section])
+    end
+  end
+
+  context '#list_cms_files' do
+    let(:css_file) do
+      {
+        'created_at' => '2016-06-12T21:26:13+03:00',
+        'updated_at' => '2016-06-12T21:26:13+03:00',
+        'links' => [
+            {
+            'href' => '/admin/api/cms/sections/1710397',
+            'rel' => 'section'
+            }
+        ],
+        'tag_list' => [],
+        'url' => 'https://s3.amazonaws.com/enterprise-multitenant.3scale.net.3scale.net/andrewtest1/2016/06/12/animate.min-3107fef295346155.css?X-Amz-',
+        'path' => '/css/animate.min.css',
+        'section_id' => 1710397,
+        'title' => 'animate.min.css',
+        'id' => 363531
+      }
+    end
+
+    let(:files) do
+      {
+          'files' => [
+              {
+                  'file' => css_file
+              }
+          ]
+      }
+    end
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/cms/files', {:params => {:page => 1, :per_page => 100}})
+                                 .and_return(files)
+      expect(client.list_cms(:file, 1)).to match_array([css_file])
+    end
+  end
+
+  context '#list_cms_templates' do
+    let(:users_menu_partial) do
+      {
+          'updated_at' => '2016-08-18T18:16:38+03:00',
+          'id' => 4833245,
+          'created_at' => '2014-10-17T12:45:40+04:00',
+          'liquid_enabled' => true,
+          'system_name' => 'users_menu'
+      }
+    end
+
+    let(:templates) do
+      {
+          'templates' => [
+              {
+                  'partial' => users_menu_partial
+              }
+          ]
+      }
+    end
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/cms/templates', {:params => {:page => 1, :per_page => 100}})
+                                 .and_return(templates)
+      expect(client.list_cms(:template, 1, 'partial')).to match_array([users_menu_partial])
+    end
+  end
 end

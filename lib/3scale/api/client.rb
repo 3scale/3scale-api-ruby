@@ -816,6 +816,19 @@ module ThreeScale
         extract(entity: 'account', from: response)
       end
 
+      # @api public
+      # @param [String] kind Kind of object to list in ['template', 'file', 'section']
+      # @param [Fixnum] page Page of results to return
+      # @return [Hash]
+      # NOTE: when listing 'templates' the return list can contain objects of type 'partial' and/or 'page'
+      # so the subkind parameter can be used to specify which to include in the list returned
+      def list_cms(kind, page, subkind=nil)
+        params = { per_page: 100, page: page}.reject { |_, value| value.nil? }
+        response = http_client.get("/admin/api/cms/#{kind}s", params: params)
+        subkind = "#{kind}" unless subkind
+        extract(collection: "#{kind}s", entity: subkind, from: response)
+      end
+
       protected
 
       def extract(collection: nil, entity:, from:)
