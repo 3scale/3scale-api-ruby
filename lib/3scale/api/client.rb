@@ -825,7 +825,7 @@ module ThreeScale
       def list_cms(kind, page, subkind=nil)
         params = { per_page: 100, page: page}.reject { |_, value| value.nil? }
         response = http_client.get("/admin/api/cms/#{kind}s", params: params)
-        subkind = "#{kind}" unless subkind
+        subkind ||= kind.to_s
         extract(collection: "#{kind}s", entity: subkind, from: response)
       end
 
