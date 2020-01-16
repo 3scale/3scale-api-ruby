@@ -1130,4 +1130,12 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.create_backend(attrs)).to eq(backend_a)
     end
   end
+
+  context '#delete_backend' do
+    it do
+      expect(http_client).to receive(:delete)
+        .with('/admin/api/backend_apis/200').and_return(' ')
+      expect(client.delete_backend(200)).to eq(true)
+    end
+  end
 end
