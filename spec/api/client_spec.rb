@@ -1217,4 +1217,60 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.update_backend_metric(1, 200, attrs)).to eq(metric_a)
     end
   end
+
+  context '#list_backend_methods' do
+    let(:metric_a) { { 'id' => 1 } }
+    let(:metric_b) { { 'id' => 2 } }
+    let(:methods) { [metric_a, metric_b] }
+    let(:resp_body) { { 'methods' => methods.map { |b| { 'method' => b } } } }
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/10/metrics/20/methods').and_return(resp_body)
+      expect(client.list_backend_methods(10, 20)).to match_array(methods)
+    end
+  end
+
+  context '#create_backend_method' do
+    let(:attrs) { { 'name' => 'metric A' } }
+    let(:method_a) { { 'id' => 200 } }
+    let(:response_body) { { 'method' => method_a} }
+
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/backend_apis/10/metrics/20/methods', body: attrs)
+        .and_return(response_body)
+      expect(client.create_backend_method(10, 20, attrs)).to eq(method_a)
+    end
+  end
+
+  context '#delete_backend_method' do
+    it do
+      expect(http_client).to receive(:delete)
+        .with('/admin/api/backend_apis/1/metrics/20/methods/300').and_return(' ')
+      expect(client.delete_backend_method(1, 20, 300)).to eq(true)
+    end
+  end
+
+  context '#backend_method' do
+    let(:method_a) { { 'id' => 200 } }
+    let(:response_body) { { 'method' => method_a } }
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/100/metrics/200/methods/300')
+                                          .and_return(response_body)
+      expect(client.backend_method(100, 200, 300)).to eq(method_a)
+    end
+  end
+
+  context '#update_backend_method' do
+    let(:attrs) { { 'name' => 'metric A' } }
+    let(:method_a) { { 'id' => 200 } }
+    let(:response_body) { { 'method' => method_a } }
+
+    it do
+      expect(http_client).to receive(:put)
+        .with('/admin/api/backend_apis/100/metrics/200/methods/300', body: attrs)
+        .and_return(response_body)
+      expect(client.update_backend_method(100, 200, 300, attrs)).to eq(method_a)
+    end
+  end
 end

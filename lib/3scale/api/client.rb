@@ -897,6 +897,50 @@ module ThreeScale
         extract(entity: 'metric', from: response)
       end
 
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @return [List]
+      def list_backend_methods(backend_id, metric_id)
+        response = http_client.get("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods")
+        extract(collection: 'methods', entity: 'method', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @param [Hash] attributes Metric attributes
+      # @return [Hash]
+      def create_backend_method(backend_id, metric_id, attrs)
+        response = http_client.post("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods",
+                                    body: attrs)
+        extract(entity: 'method', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @param [Fixnum] id Backend ID
+      def delete_backend_method(backend_id, metric_id, method_id)
+        http_client.delete("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods/#{method_id}")
+        true
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @return [Hash]
+      def backend_method(backend_id, metric_id, method_id)
+        response = http_client.get("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods/#{method_id}")
+        extract(entity: 'method', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @param [Hash] attributes Backend attributes
+      # @return [Hash]
+      def update_backend_method(backend_id, metric_id, method_id, attributes)
+        response = http_client.put("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods/#{method_id}",
+                                   body: attributes)
+        extract(entity: 'method', from: response)
+      end
+
       protected
 
       def extract(collection: nil, entity:, from:)
