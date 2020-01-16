@@ -823,6 +823,14 @@ module ThreeScale
         extract(collection: 'backend_apis', entity: 'backend_api', from: response)
       end
 
+      # @api public
+      # @param [Hash] attributes Backend attributes
+      # @return [Hash]
+      def create_backend(attributes)
+        response = http_client.post('/admin/api/backend_apis', body: attributes)
+        extract(entity: 'backend_api', from: response)
+      end
+
       protected
 
       def extract(collection: nil, entity:, from:)

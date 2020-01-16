@@ -1117,4 +1117,17 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.list_backends).to match_array(backend_apis)
     end
   end
+
+  context '#create_backend' do
+    let(:attrs) { { 'name' => 'backend A' } }
+    let(:backend_a) { { 'id' => 200 } }
+    let(:response_body) { { 'backend_api' => backend_a } }
+
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/backend_apis', body: attrs)
+        .and_return(response_body)
+      expect(client.create_backend(attrs)).to eq(backend_a)
+    end
+  end
 end
