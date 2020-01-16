@@ -33,6 +33,8 @@ RSpec.describe ThreeScale::API::HttpClient do
     it 'returns body' do
       is_expected.to eq('foo' => 'bar')
     end
+
+    it_behaves_like 'fair error handler'
   end
 
   describe '#post' do
@@ -52,6 +54,8 @@ RSpec.describe ThreeScale::API::HttpClient do
     it 'returns body' do
       is_expected.to eq('foo' => 'bar')
     end
+
+    it_behaves_like 'fair error handler'
   end
 
   describe '#put' do
@@ -82,6 +86,8 @@ RSpec.describe ThreeScale::API::HttpClient do
         expect(stub).to have_been_requested
       end
     end
+
+    it_behaves_like 'fair error handler'
   end
 
   describe '#patch' do
@@ -120,5 +126,7 @@ RSpec.describe ThreeScale::API::HttpClient do
     it 'returns body' do
       is_expected.to eq('foo' => 'bar')
     end
+
+    it_behaves_like 'fair error handler'
   end
 end
