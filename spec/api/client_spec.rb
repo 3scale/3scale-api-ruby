@@ -1148,4 +1148,17 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.backend(200)).to eq(backend_a)
     end
   end
+
+  context '#update_backend' do
+    let(:attrs) { { 'name' => 'backend A' } }
+    let(:backend_a) { { 'id' => 200 } }
+    let(:response_body) { { 'backend_api' => backend_a } }
+
+    it do
+      expect(http_client).to receive(:put)
+        .with('/admin/api/backend_apis/200', body: attrs)
+        .and_return(response_body)
+      expect(client.update_backend(200, attrs)).to eq(backend_a)
+    end
+  end
 end

@@ -846,6 +846,15 @@ module ThreeScale
         extract(entity: 'backend_api', from: response)
       end
 
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @param [Hash] attributes Backend attributes
+      # @return [Hash]
+      def update_backend(id, attributes)
+        response = http_client.put("/admin/api/backend_apis/#{id}", body: attributes)
+        extract(entity: 'backend_api', from: response)
+      end
+
       protected
 
       def extract(collection: nil, entity:, from:)
