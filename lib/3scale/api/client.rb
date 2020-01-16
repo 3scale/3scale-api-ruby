@@ -832,10 +832,18 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Hash] attributes Backend attributes
+      # @param [Fixnum] id Backend ID
       def delete_backend(id)
         http_client.delete("/admin/api/backend_apis/#{id}")
         true
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @return [Hash]
+      def backend(id)
+        response = http_client.get("/admin/api/backend_apis/#{id}")
+        extract(entity: 'backend_api', from: response)
       end
 
       protected

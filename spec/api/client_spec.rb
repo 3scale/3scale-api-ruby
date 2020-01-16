@@ -1138,4 +1138,14 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.delete_backend(200)).to eq(true)
     end
   end
+
+  context '#backend' do
+    let(:backend_a) { { 'id' => 200 } }
+    let(:response_body) { { 'backend_api' => backend_a } }
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/200')
+                                          .and_return(response_body)
+      expect(client.backend(200)).to eq(backend_a)
+    end
+  end
 end
