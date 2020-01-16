@@ -1161,4 +1161,60 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.update_backend(200, attrs)).to eq(backend_a)
     end
   end
+
+  context '#list_backend_metrics' do
+    let(:metric_a) { { 'id' => 1 } }
+    let(:metric_b) { { 'id' => 2 } }
+    let(:metrics) { [metric_a, metric_b] }
+    let(:resp_body) { { 'metrics' => metrics.map { |b| { 'metric' => b } } } }
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/1/metrics').and_return(resp_body)
+      expect(client.list_backend_metrics(1)).to match_array(metrics)
+    end
+  end
+
+  context '#create_backend_metric' do
+    let(:attrs) { { 'name' => 'metric A' } }
+    let(:metric_a) { { 'id' => 200 } }
+    let(:response_body) { { 'metric' => metric_a } }
+
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/backend_apis/1/metrics', body: attrs)
+        .and_return(response_body)
+      expect(client.create_backend_metric(1, attrs)).to eq(metric_a)
+    end
+  end
+
+  context '#delete_backend_metric' do
+    it do
+      expect(http_client).to receive(:delete)
+        .with('/admin/api/backend_apis/1/metrics/200').and_return(' ')
+      expect(client.delete_backend_metric(1, 200)).to eq(true)
+    end
+  end
+
+  context '#backend_metric' do
+    let(:metric_a) { { 'id' => 200 } }
+    let(:response_body) { { 'metric' => metric_a } }
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/1/metrics/200')
+                                          .and_return(response_body)
+      expect(client.backend_metric(1, 200)).to eq(metric_a)
+    end
+  end
+
+  context '#update_backend_metric' do
+    let(:attrs) { { 'name' => 'metric A' } }
+    let(:metric_a) { { 'id' => 200 } }
+    let(:response_body) { { 'metric' => metric_a } }
+
+    it do
+      expect(http_client).to receive(:put)
+        .with('/admin/api/backend_apis/1/metrics/200', body: attrs)
+        .and_return(response_body)
+      expect(client.update_backend_metric(1, 200, attrs)).to eq(metric_a)
+    end
+  end
 end

@@ -855,6 +855,48 @@ module ThreeScale
         extract(entity: 'backend_api', from: response)
       end
 
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @return [List]
+      def list_backend_metrics(id)
+        response = http_client.get("/admin/api/backend_apis/#{id}/metrics")
+        extract(collection: 'metrics', entity: 'metric', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @param [Hash] attributes Metric attributes
+      # @return [Hash]
+      def create_backend_metric(id, attrs)
+        response = http_client.post("/admin/api/backend_apis/#{id}/metrics", body: attrs)
+        extract(entity: 'metric', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @param [Fixnum] id Backend ID
+      def delete_backend_metric(backend_id, metric_id)
+        http_client.delete("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}")
+        true
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @return [Hash]
+      def backend_metric(backend_id, metric_id)
+        response = http_client.get("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}")
+        extract(entity: 'metric', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @param [Hash] attributes Backend attributes
+      # @return [Hash]
+      def update_backend_metric(backend_id, metric_id, attributes)
+        response = http_client.put("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}", body: attributes)
+        extract(entity: 'metric', from: response)
+      end
+
       protected
 
       def extract(collection: nil, entity:, from:)
