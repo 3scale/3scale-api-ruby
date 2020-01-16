@@ -717,7 +717,7 @@ module ThreeScale
         extract(collection: 'applications', entity: 'application', from: response)
       end
 
-      # @api public 
+      # @api public
       # @return [Array<Hash]
       def list_application_plans
         response = http_client.get("/admin/api/application_plans")
@@ -760,7 +760,7 @@ module ThreeScale
         response = http_client.put("/admin/api/accounts/#{account_id}/applications/#{application_id}/suspend")
         extract(entity: 'application', from: response)
       end
-      
+
       # @api public
       # @param [String] account_id Account ID
       # @param [String] application_id Application ID
@@ -814,6 +814,13 @@ module ThreeScale
       def show_provider
         response = http_client.get('/admin/api/provider')
         extract(entity: 'account', from: response)
+      end
+
+      # @api public
+      # @return [List]
+      def list_backends
+        response = http_client.get('/admin/api/backend_apis')
+        extract(collection: 'backend_apis', entity: 'backend_api', from: response)
       end
 
       protected

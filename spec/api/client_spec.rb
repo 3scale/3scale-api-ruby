@@ -1105,4 +1105,16 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.show_provider).to eq(provider)
     end
   end
+
+  context '#list_backends' do
+    let(:backend_api_a) { { 'id' => 1 } }
+    let(:backend_api_b) { { 'id' => 2 } }
+    let(:backend_apis) { [backend_api_a, backend_api_b] }
+    let(:resp_body) { { 'backend_apis' => backend_apis.map { |b| { 'backend_api' => b } } } }
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis').and_return(resp_body)
+      expect(client.list_backends).to match_array(backend_apis)
+    end
+  end
 end
