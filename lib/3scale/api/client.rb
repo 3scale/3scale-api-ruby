@@ -873,15 +873,16 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Fixnum] id Backend ID
-      # @param [Fixnum] id Backend ID
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
       def delete_backend_metric(backend_id, metric_id)
         http_client.delete("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}")
         true
       end
 
       # @api public
-      # @param [Fixnum] id Backend ID
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
       # @return [Hash]
       def backend_metric(backend_id, metric_id)
         response = http_client.get("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}")
@@ -889,7 +890,8 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Fixnum] id Backend ID
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
       # @param [Hash] attributes Backend attributes
       # @return [Hash]
       def update_backend_metric(backend_id, metric_id, attributes)
@@ -898,7 +900,8 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Fixnum] id Backend ID
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
       # @return [List]
       def list_backend_methods(backend_id, metric_id)
         response = http_client.get("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods")
@@ -906,7 +909,8 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Fixnum] id Backend ID
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
       # @param [Hash] attributes Metric attributes
       # @return [Hash]
       def create_backend_method(backend_id, metric_id, attrs)
@@ -916,15 +920,18 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Fixnum] id Backend ID
-      # @param [Fixnum] id Backend ID
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
+      # @param [Fixnum] method_id Backend Method ID
       def delete_backend_method(backend_id, metric_id, method_id)
         http_client.delete("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods/#{method_id}")
         true
       end
 
       # @api public
-      # @param [Fixnum] id Backend ID
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
+      # @param [Fixnum] method_id Backend Method ID
       # @return [Hash]
       def backend_method(backend_id, metric_id, method_id)
         response = http_client.get("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods/#{method_id}")
@@ -932,13 +939,61 @@ module ThreeScale
       end
 
       # @api public
-      # @param [Fixnum] id Backend ID
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
+      # @param [Fixnum] method_id Backend Method ID
       # @param [Hash] attributes Backend attributes
       # @return [Hash]
       def update_backend_method(backend_id, metric_id, method_id, attributes)
         response = http_client.put("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods/#{method_id}",
                                    body: attributes)
         extract(entity: 'method', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @return [List]
+      def list_backend_mapping_rules(backend_id)
+        response = http_client.get("/admin/api/backend_apis/#{backend_id}/mapping_rules")
+        extract(collection: 'mapping_rules', entity: 'mapping_rule', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Hash] attributes Metric attributes
+      # @return [Hash]
+      def create_backend_mapping_rule(backend_id, attrs)
+        response = http_client.post("/admin/api/backend_apis/#{backend_id}/mapping_rules",
+                                    body: attrs)
+        extract(entity: 'mapping_rule', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] mapping_rule_id MappingRule ID
+      def delete_backend_mapping_rule(backend_id, mapping_rule_id)
+        http_client.delete("/admin/api/backend_apis/#{backend_id}/mapping_rules/#{mapping_rule_id}")
+        true
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] mapping_rule_id MappingRule ID
+      # @return [Hash]
+      def backend_mapping_rule(backend_id, mapping_rule_id)
+        response = http_client.get("/admin/api/backend_apis/#{backend_id}/mapping_rules/#{mapping_rule_id}")
+        extract(entity: 'mapping_rule', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] mapping_rule_id MappingRule ID
+      # @param [Hash] attributes Backend attributes
+      # @return [Hash]
+      def update_backend_mapping_rule(backend_id, mapping_rule_id, attributes)
+        response = http_client.put("/admin/api/backend_apis/#{backend_id}/mapping_rules/#{mapping_rule_id}",
+                                   body: attributes)
+        extract(entity: 'mapping_rule', from: response)
       end
 
       protected

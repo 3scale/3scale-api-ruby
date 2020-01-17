@@ -1273,4 +1273,60 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.update_backend_method(100, 200, 300, attrs)).to eq(method_a)
     end
   end
+
+  context '#list_backend_mapping_rules' do
+    let(:mapping_rule_a) { { 'id' => 1 } }
+    let(:mapping_rule_b) { { 'id' => 2 } }
+    let(:mapping_rules) { [mapping_rule_a, mapping_rule_b] }
+    let(:resp_body) { { 'mapping_rules' => mapping_rules.map { |b| { 'mapping_rule' => b } } } }
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/1/mapping_rules').and_return(resp_body)
+      expect(client.list_backend_mapping_rules(1)).to match_array(mapping_rules)
+    end
+  end
+
+  context '#create_backend_mapping_rule' do
+    let(:attrs) { { 'pattern' => '/pets$' } }
+    let(:mapping_rule_a) { { 'id' => 1 } }
+    let(:response_body) { { 'mapping_rule' => mapping_rule_a } }
+
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/backend_apis/1/mapping_rules', body: attrs)
+        .and_return(response_body)
+      expect(client.create_backend_mapping_rule(1, attrs)).to eq(mapping_rule_a)
+    end
+  end
+
+  context '#delete_backend_mapping_rule' do
+    it do
+      expect(http_client).to receive(:delete)
+        .with('/admin/api/backend_apis/1/mapping_rules/200').and_return(' ')
+      expect(client.delete_backend_mapping_rule(1, 200)).to eq(true)
+    end
+  end
+
+  context '#backend_mapping_rule' do
+    let(:mapping_rule_a) { { 'id' => 1 } }
+    let(:response_body) { { 'mapping_rule' => mapping_rule_a } }
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/1/mapping_rules/200')
+                                          .and_return(response_body)
+      expect(client.backend_mapping_rule(1, 200)).to eq(mapping_rule_a)
+    end
+  end
+
+  context '#update_backend_mapping_rule' do
+    let(:attrs) { { 'delta' => 2 } }
+    let(:mapping_rule_a) { { 'id' => 1 } }
+    let(:response_body) { { 'mapping_rule' => mapping_rule_a } }
+
+    it do
+      expect(http_client).to receive(:put)
+        .with('/admin/api/backend_apis/1/mapping_rules/200', body: attrs)
+        .and_return(response_body)
+      expect(client.update_backend_mapping_rule(1, 200, attrs)).to eq(mapping_rule_a)
+    end
+  end
 end
