@@ -1200,4 +1200,11 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.list_cms(:template, 1, 'partial')).to match_array([users_menu_partial])
     end
   end
+
+  context '#delete_cms_files' do
+    it do
+      expect(http_client).to receive(:delete).with('/admin/api/cms/files/3')
+      expect(client.delete_cms(:file, 3)).to eq(true)
+    end
+  end
 end

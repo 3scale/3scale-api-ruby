@@ -825,8 +825,16 @@ module ThreeScale
       def list_cms(kind, page, subkind=nil)
         params = { per_page: 100, page: page}.reject { |_, value| value.nil? }
         response = http_client.get("/admin/api/cms/#{kind}s", params: params)
-        subkind ||= kind.to_s
-        extract(collection: "#{kind}s", entity: subkind, from: response)
+        subkind ||= kind
+        extract(collection: "#{kind}s", entity: subkind.to_s, from: response)
+      end
+
+      # @api public
+      # @param [String] kind Kind of object to list in ['template', 'file', 'section']
+      # @param [Integer] id Id of the object to delete
+      def delete_cms(kind, id)
+        http_client.delete("/admin/api/cms/#{kind}s/#{id}")
+        true
       end
 
       protected
