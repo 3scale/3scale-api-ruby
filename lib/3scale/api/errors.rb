@@ -10,6 +10,10 @@ module ThreeScale
       def to_s
         response.to_s
       end
+
+      def inspect
+        response.inspect
+      end
     end
   end
 end
