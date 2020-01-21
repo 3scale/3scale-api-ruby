@@ -1,14 +1,12 @@
 # coding: utf-8
 
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require '3scale/api/version'
+require_relative 'lib/3scale/api/version'
 
 Gem::Specification.new do |spec|
   spec.name          = '3scale-api'
   spec.version       = ThreeScale::API::VERSION
   spec.authors       = ['Michal Cichra', 'Eguzki Astiz Lezaun']
-  spec.email         = ['michal@3scale.net', 'eastizle@redhat.com']
+  spec.email         = %w(michal@3scale.net eastizle@redhat.com)
 
   spec.summary       = 'API Client for 3scale APIs'
   spec.description   = 'API Client to access your 3scale APIs: Account Management API'
@@ -28,4 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'dotenv', '~> 2.7'
   spec.add_development_dependency 'pry-byebug', '~> 3.7' if RUBY_PLATFORM == 'ruby'
   spec.add_development_dependency 'yard', '~> 0.9'
+  spec.add_development_dependency 'fakefs', '>= 0.8.1'
 end
