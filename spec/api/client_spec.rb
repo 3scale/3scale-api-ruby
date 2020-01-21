@@ -1105,4 +1105,284 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.show_provider).to eq(provider)
     end
   end
+
+  context '#list_backends' do
+    let(:backend_api_a) { { 'id' => 1 } }
+    let(:backend_api_b) { { 'id' => 2 } }
+    let(:backend_apis) { [backend_api_a, backend_api_b] }
+    let(:resp_body) { { 'backend_apis' => backend_apis.map { |b| { 'backend_api' => b } } } }
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis').and_return(resp_body)
+      expect(client.list_backends).to match_array(backend_apis)
+    end
+  end
+
+  context '#create_backend' do
+    let(:attrs) { { 'name' => 'backend A' } }
+    let(:backend_a) { { 'id' => 200 } }
+    let(:response_body) { { 'backend_api' => backend_a } }
+
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/backend_apis', body: attrs)
+        .and_return(response_body)
+      expect(client.create_backend(attrs)).to eq(backend_a)
+    end
+  end
+
+  context '#delete_backend' do
+    it do
+      expect(http_client).to receive(:delete)
+        .with('/admin/api/backend_apis/200').and_return(' ')
+      expect(client.delete_backend(200)).to eq(true)
+    end
+  end
+
+  context '#backend' do
+    let(:backend_a) { { 'id' => 200 } }
+    let(:response_body) { { 'backend_api' => backend_a } }
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/200')
+                                          .and_return(response_body)
+      expect(client.backend(200)).to eq(backend_a)
+    end
+  end
+
+  context '#update_backend' do
+    let(:attrs) { { 'name' => 'backend A' } }
+    let(:backend_a) { { 'id' => 200 } }
+    let(:response_body) { { 'backend_api' => backend_a } }
+
+    it do
+      expect(http_client).to receive(:put)
+        .with('/admin/api/backend_apis/200', body: attrs)
+        .and_return(response_body)
+      expect(client.update_backend(200, attrs)).to eq(backend_a)
+    end
+  end
+
+  context '#list_backend_metrics' do
+    let(:metric_a) { { 'id' => 1 } }
+    let(:metric_b) { { 'id' => 2 } }
+    let(:metrics) { [metric_a, metric_b] }
+    let(:resp_body) { { 'metrics' => metrics.map { |b| { 'metric' => b } } } }
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/1/metrics').and_return(resp_body)
+      expect(client.list_backend_metrics(1)).to match_array(metrics)
+    end
+  end
+
+  context '#create_backend_metric' do
+    let(:attrs) { { 'name' => 'metric A' } }
+    let(:metric_a) { { 'id' => 200 } }
+    let(:response_body) { { 'metric' => metric_a } }
+
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/backend_apis/1/metrics', body: attrs)
+        .and_return(response_body)
+      expect(client.create_backend_metric(1, attrs)).to eq(metric_a)
+    end
+  end
+
+  context '#delete_backend_metric' do
+    it do
+      expect(http_client).to receive(:delete)
+        .with('/admin/api/backend_apis/1/metrics/200').and_return(' ')
+      expect(client.delete_backend_metric(1, 200)).to eq(true)
+    end
+  end
+
+  context '#backend_metric' do
+    let(:metric_a) { { 'id' => 200 } }
+    let(:response_body) { { 'metric' => metric_a } }
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/1/metrics/200')
+                                          .and_return(response_body)
+      expect(client.backend_metric(1, 200)).to eq(metric_a)
+    end
+  end
+
+  context '#update_backend_metric' do
+    let(:attrs) { { 'name' => 'metric A' } }
+    let(:metric_a) { { 'id' => 200 } }
+    let(:response_body) { { 'metric' => metric_a } }
+
+    it do
+      expect(http_client).to receive(:put)
+        .with('/admin/api/backend_apis/1/metrics/200', body: attrs)
+        .and_return(response_body)
+      expect(client.update_backend_metric(1, 200, attrs)).to eq(metric_a)
+    end
+  end
+
+  context '#list_backend_methods' do
+    let(:metric_a) { { 'id' => 1 } }
+    let(:metric_b) { { 'id' => 2 } }
+    let(:methods) { [metric_a, metric_b] }
+    let(:resp_body) { { 'methods' => methods.map { |b| { 'method' => b } } } }
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/10/metrics/20/methods').and_return(resp_body)
+      expect(client.list_backend_methods(10, 20)).to match_array(methods)
+    end
+  end
+
+  context '#create_backend_method' do
+    let(:attrs) { { 'name' => 'metric A' } }
+    let(:method_a) { { 'id' => 200 } }
+    let(:response_body) { { 'method' => method_a} }
+
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/backend_apis/10/metrics/20/methods', body: attrs)
+        .and_return(response_body)
+      expect(client.create_backend_method(10, 20, attrs)).to eq(method_a)
+    end
+  end
+
+  context '#delete_backend_method' do
+    it do
+      expect(http_client).to receive(:delete)
+        .with('/admin/api/backend_apis/1/metrics/20/methods/300').and_return(' ')
+      expect(client.delete_backend_method(1, 20, 300)).to eq(true)
+    end
+  end
+
+  context '#backend_method' do
+    let(:method_a) { { 'id' => 200 } }
+    let(:response_body) { { 'method' => method_a } }
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/100/metrics/200/methods/300')
+                                          .and_return(response_body)
+      expect(client.backend_method(100, 200, 300)).to eq(method_a)
+    end
+  end
+
+  context '#update_backend_method' do
+    let(:attrs) { { 'name' => 'metric A' } }
+    let(:method_a) { { 'id' => 200 } }
+    let(:response_body) { { 'method' => method_a } }
+
+    it do
+      expect(http_client).to receive(:put)
+        .with('/admin/api/backend_apis/100/metrics/200/methods/300', body: attrs)
+        .and_return(response_body)
+      expect(client.update_backend_method(100, 200, 300, attrs)).to eq(method_a)
+    end
+  end
+
+  context '#list_backend_mapping_rules' do
+    let(:mapping_rule_a) { { 'id' => 1 } }
+    let(:mapping_rule_b) { { 'id' => 2 } }
+    let(:mapping_rules) { [mapping_rule_a, mapping_rule_b] }
+    let(:resp_body) { { 'mapping_rules' => mapping_rules.map { |b| { 'mapping_rule' => b } } } }
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/1/mapping_rules').and_return(resp_body)
+      expect(client.list_backend_mapping_rules(1)).to match_array(mapping_rules)
+    end
+  end
+
+  context '#create_backend_mapping_rule' do
+    let(:attrs) { { 'pattern' => '/pets$' } }
+    let(:mapping_rule_a) { { 'id' => 1 } }
+    let(:response_body) { { 'mapping_rule' => mapping_rule_a } }
+
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/backend_apis/1/mapping_rules', body: attrs)
+        .and_return(response_body)
+      expect(client.create_backend_mapping_rule(1, attrs)).to eq(mapping_rule_a)
+    end
+  end
+
+  context '#delete_backend_mapping_rule' do
+    it do
+      expect(http_client).to receive(:delete)
+        .with('/admin/api/backend_apis/1/mapping_rules/200').and_return(' ')
+      expect(client.delete_backend_mapping_rule(1, 200)).to eq(true)
+    end
+  end
+
+  context '#backend_mapping_rule' do
+    let(:mapping_rule_a) { { 'id' => 1 } }
+    let(:response_body) { { 'mapping_rule' => mapping_rule_a } }
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis/1/mapping_rules/200')
+                                          .and_return(response_body)
+      expect(client.backend_mapping_rule(1, 200)).to eq(mapping_rule_a)
+    end
+  end
+
+  context '#update_backend_mapping_rule' do
+    let(:attrs) { { 'delta' => 2 } }
+    let(:mapping_rule_a) { { 'id' => 1 } }
+    let(:response_body) { { 'mapping_rule' => mapping_rule_a } }
+
+    it do
+      expect(http_client).to receive(:put)
+        .with('/admin/api/backend_apis/1/mapping_rules/200', body: attrs)
+        .and_return(response_body)
+      expect(client.update_backend_mapping_rule(1, 200, attrs)).to eq(mapping_rule_a)
+    end
+  end
+
+  context '#list_backend_usages' do
+    let(:backend_usage_a) { { 'id' => 1 } }
+    let(:backend_usage_b) { { 'id' => 2 } }
+    let(:backend_usages) { [backend_usage_a, backend_usage_b] }
+    let(:resp_body) { backend_usages.map { |b| { 'backend_usage' => b } } }
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/services/1/backend_usages').and_return(resp_body)
+      expect(client.list_backend_usages(1)).to match_array(backend_usages)
+    end
+  end
+
+  context '#create_backend_usage' do
+    let(:attrs) { { 'path' => '/v1' } }
+    let(:backend_usage_a) { { 'id' => 1 } }
+    let(:response_body) { { 'backend_usage' => backend_usage_a } }
+
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/services/1/backend_usages', body: attrs)
+        .and_return(response_body)
+      expect(client.create_backend_usage(1, attrs)).to eq(backend_usage_a)
+    end
+  end
+
+  context '#delete_backend_usage' do
+    it do
+      expect(http_client).to receive(:delete)
+        .with('/admin/api/services/1/backend_usages/200').and_return(' ')
+      expect(client.delete_backend_usage(1, 200)).to eq(true)
+    end
+  end
+
+  context '#backend_backend_usage' do
+    let(:backend_usage_a) { { 'id' => 1 } }
+    let(:response_body) { { 'backend_usage' => backend_usage_a } }
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/services/1/backend_usages/200')
+                                          .and_return(response_body)
+      expect(client.backend_usage(1, 200)).to eq(backend_usage_a)
+    end
+  end
+
+  context '#update_backend_usage' do
+    let(:attrs) { { 'path' => '/v1' } }
+    let(:backend_usage_a) { { 'id' => 1 } }
+    let(:response_body) { { 'backend_usage' => backend_usage_a } }
+
+    it do
+      expect(http_client).to receive(:put)
+        .with('/admin/api/services/1/backend_usages/200', body: attrs)
+        .and_return(response_body)
+      expect(client.update_backend_usage(1, 200, attrs)).to eq(backend_usage_a)
+    end
+  end
 end

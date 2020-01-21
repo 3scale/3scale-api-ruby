@@ -717,7 +717,7 @@ module ThreeScale
         extract(collection: 'applications', entity: 'application', from: response)
       end
 
-      # @api public 
+      # @api public
       # @return [Array<Hash]
       def list_application_plans
         response = http_client.get("/admin/api/application_plans")
@@ -760,7 +760,7 @@ module ThreeScale
         response = http_client.put("/admin/api/accounts/#{account_id}/applications/#{application_id}/suspend")
         extract(entity: 'application', from: response)
       end
-      
+
       # @api public
       # @param [String] account_id Account ID
       # @param [String] application_id Application ID
@@ -814,6 +814,232 @@ module ThreeScale
       def show_provider
         response = http_client.get('/admin/api/provider')
         extract(entity: 'account', from: response)
+      end
+
+      # @api public
+      # @return [List]
+      def list_backends
+        response = http_client.get('/admin/api/backend_apis')
+        extract(collection: 'backend_apis', entity: 'backend_api', from: response)
+      end
+
+      # @api public
+      # @param [Hash] attributes Backend attributes
+      # @return [Hash]
+      def create_backend(attributes)
+        response = http_client.post('/admin/api/backend_apis', body: attributes)
+        extract(entity: 'backend_api', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      def delete_backend(id)
+        http_client.delete("/admin/api/backend_apis/#{id}")
+        true
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @return [Hash]
+      def backend(id)
+        response = http_client.get("/admin/api/backend_apis/#{id}")
+        extract(entity: 'backend_api', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @param [Hash] attributes Backend attributes
+      # @return [Hash]
+      def update_backend(id, attributes)
+        response = http_client.put("/admin/api/backend_apis/#{id}", body: attributes)
+        extract(entity: 'backend_api', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @return [List]
+      def list_backend_metrics(id)
+        response = http_client.get("/admin/api/backend_apis/#{id}/metrics")
+        extract(collection: 'metrics', entity: 'metric', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Backend ID
+      # @param [Hash] attributes Metric attributes
+      # @return [Hash]
+      def create_backend_metric(id, attrs)
+        response = http_client.post("/admin/api/backend_apis/#{id}/metrics", body: attrs)
+        extract(entity: 'metric', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
+      def delete_backend_metric(backend_id, metric_id)
+        http_client.delete("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}")
+        true
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
+      # @return [Hash]
+      def backend_metric(backend_id, metric_id)
+        response = http_client.get("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}")
+        extract(entity: 'metric', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
+      # @param [Hash] attributes Backend attributes
+      # @return [Hash]
+      def update_backend_metric(backend_id, metric_id, attributes)
+        response = http_client.put("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}", body: attributes)
+        extract(entity: 'metric', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
+      # @return [List]
+      def list_backend_methods(backend_id, metric_id)
+        response = http_client.get("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods")
+        extract(collection: 'methods', entity: 'method', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
+      # @param [Hash] attributes Metric attributes
+      # @return [Hash]
+      def create_backend_method(backend_id, metric_id, attrs)
+        response = http_client.post("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods",
+                                    body: attrs)
+        extract(entity: 'method', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
+      # @param [Fixnum] method_id Backend Method ID
+      def delete_backend_method(backend_id, metric_id, method_id)
+        http_client.delete("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods/#{method_id}")
+        true
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
+      # @param [Fixnum] method_id Backend Method ID
+      # @return [Hash]
+      def backend_method(backend_id, metric_id, method_id)
+        response = http_client.get("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods/#{method_id}")
+        extract(entity: 'method', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] metric_id Backend Metric ID
+      # @param [Fixnum] method_id Backend Method ID
+      # @param [Hash] attributes Backend attributes
+      # @return [Hash]
+      def update_backend_method(backend_id, metric_id, method_id, attributes)
+        response = http_client.put("/admin/api/backend_apis/#{backend_id}/metrics/#{metric_id}/methods/#{method_id}",
+                                   body: attributes)
+        extract(entity: 'method', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @return [List]
+      def list_backend_mapping_rules(backend_id)
+        response = http_client.get("/admin/api/backend_apis/#{backend_id}/mapping_rules")
+        extract(collection: 'mapping_rules', entity: 'mapping_rule', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Hash] attrs Metric attributes
+      # @return [Hash]
+      def create_backend_mapping_rule(backend_id, attrs)
+        response = http_client.post("/admin/api/backend_apis/#{backend_id}/mapping_rules",
+                                    body: attrs)
+        extract(entity: 'mapping_rule', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] mapping_rule_id MappingRule ID
+      def delete_backend_mapping_rule(backend_id, mapping_rule_id)
+        http_client.delete("/admin/api/backend_apis/#{backend_id}/mapping_rules/#{mapping_rule_id}")
+        true
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] mapping_rule_id MappingRule ID
+      # @return [Hash]
+      def backend_mapping_rule(backend_id, mapping_rule_id)
+        response = http_client.get("/admin/api/backend_apis/#{backend_id}/mapping_rules/#{mapping_rule_id}")
+        extract(entity: 'mapping_rule', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] backend_id Backend ID
+      # @param [Fixnum] mapping_rule_id MappingRule ID
+      # @param [Hash] attributes Backend attributes
+      # @return [Hash]
+      def update_backend_mapping_rule(backend_id, mapping_rule_id, attributes)
+        response = http_client.put("/admin/api/backend_apis/#{backend_id}/mapping_rules/#{mapping_rule_id}",
+                                   body: attributes)
+        extract(entity: 'mapping_rule', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] product_id Product ID
+      # @return [List]
+      def list_backend_usages(product_id)
+        response = http_client.get("/admin/api/services/#{product_id}/backend_usages")
+        extract(entity: 'backend_usage', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] product_id Product ID
+      # @param [Hash] attrs Backend Usage attributes
+      # @return [Hash]
+      def create_backend_usage(product_id, attrs)
+        response = http_client.post("/admin/api/services/#{product_id}/backend_usages",
+                                    body: attrs)
+        extract(entity: 'backend_usage', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] product_id Product ID
+      # @param [Fixnum] id Backend Usage ID
+      def delete_backend_usage(product_id, id)
+        http_client.delete("/admin/api/services/#{product_id}/backend_usages/#{id}")
+        true
+      end
+
+      # @api public
+      # @param [Fixnum] product_id Product ID
+      # @param [Fixnum] id Backend Usage ID
+      # @return [Hash]
+      def backend_usage(product_id, id)
+        response = http_client.get("/admin/api/services/#{product_id}/backend_usages/#{id}")
+        extract(entity: 'backend_usage', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] product_id Product ID
+      # @param [Fixnum] id Backend Usage ID
+      # @param [Hash] attrs Backend Usage attributes
+      # @return [Hash]
+      def update_backend_usage(product_id, id, attrs)
+        response = http_client.put("/admin/api/services/#{product_id}/backend_usages/#{id}",
+                                   body: attrs)
+        extract(entity: 'backend_usage', from: response)
       end
 
       protected
