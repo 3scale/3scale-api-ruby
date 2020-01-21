@@ -1,4 +1,5 @@
 require 'three_scale/api'
+require 'fakefs/spec_helpers'
 
 require 'webmock/rspec'
 WebMock.disable_net_connect!
@@ -26,6 +27,8 @@ require_relative 'shared_contexts'
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  config.include FakeFS::SpecHelpers, fakefs: true
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
@@ -93,13 +96,13 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = :random
 
-  config.before(:context, type: :integration) do |example|
+  config.before(:context, type: :integration) do |_|
     config = WebMock::Config.instance
     @allow_net_connect = config.allow_net_connect
     config.allow_net_connect = true
   end
 
-  config.after(:context, type: :integration) do |example|
+  config.after(:context, type: :integration) do |_|
     config.allow_net_connect = @allow_net_connect
   end
   # Seed global randomization in this process using the `--seed` CLI option.
