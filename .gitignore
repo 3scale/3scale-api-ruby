@@ -10,3 +10,4 @@
 /tmp/
 /vendor/
 .env
+**/*.swp

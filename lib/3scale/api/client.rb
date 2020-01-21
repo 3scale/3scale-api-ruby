@@ -816,15 +816,83 @@ module ThreeScale
         extract(entity: 'account', from: response)
       end
 
+      # @api public
+      # @param [String] kind Kind of object to list in ['template', 'file', 'section']
+      # @param [Fixnum] page Page of results to return
+      # @return [Hash]
+      # NOTE: when listing 'templates' the return list can contain objects of type 'partial' and/or 'page'
+      # so the subkind parameter can be used to specify which to include in the list returned
+      def list_cms(kind, page, subkind = nil)
+        params = { per_page: 100, page: page}.reject { |_, value| value.nil? }
+        response = http_client.get("/admin/api/cms/#{kind}s", params: params)
+        subkind ||= kind
+        extract(collection: "#{kind}s", entity: subkind.to_s, from: response)
+      end
+
+      # @api public
+      # @param [String] kind Kind of object to list in ['template', 'file', 'section']
+      # @param [Fixnum] id Id of the object to delete
+      def delete_cms(kind, id)
+        http_client.delete("/admin/api/cms/#{kind}s/#{id}")
+        true
+      end
+
+      # @api public
+      # @param [String] path Path in the CMS where to create the new file
+      # @param [Fixnum] section_id The id of the section to create the file in
+      # @param [String] filename The name to give to the created file
+      # @param [Array] tag_list A list of tags to associate with the new file
+      # Return file object created in the CMS
+      def create_cms_file(path, section_id, filename, tag_list)
+        params = {
+            :path => path,
+            :section_id => section_id,
+            :tag_list => tag_list,
+            :downloadable => 0,
+            :attachment => File.new(filename)}
+        response = http_client.post("/admin/api/cms/files", params: params)
+        extract(entity: 'file', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Id of the file to get from the CMS API
+      # Return file object stored in the CMS with id
+      def get_cms_file(id)
+        response = http_client.get("/admin/api/cms/files/#{id}")
+        extract(entity: 'file', from: response)
+      end
+
+      # @api public
+      # @param [String] path Path of the file to update
+      # @param [Fixnum] id Id of the file to get from the CMS API
+      # @param [Fixnum] section_id The id of the section to create the file in
+      # @param [String] filename The name to give to the created file
+      # Return updated file object from the CMS
+      def update_cms_file(path, id, section_id, filename)
+        params = {
+            :id => id,       # TODO needed?
+            :path => path,
+            :section_id => section_id,
+            :tag_list => {},
+            :downloadable => 0,
+            :attachment => File.new(filename)}
+
+        response = http_client.put("/admin/api/cms/files/#{id}", params: params)
+        extract(entity: 'file', from: response)
+      end
+
       protected
 
       def extract(collection: nil, entity:, from:)
         from = from.fetch(collection) if collection
 
         case from
-        when Array then from.map { |e| e.fetch(entity) }
-        when Hash then from.fetch(entity) { from }
-        when nil then nil # raise exception?
+        when Array then
+          from.map { |e| e.fetch(entity) }
+        when Hash then
+          from.fetch(entity) { from }
+        when nil then
+          nil # raise exception?
         else
           raise "unknown #{from}"
         end
