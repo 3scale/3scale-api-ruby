@@ -1,3 +1,5 @@
+require 'yaml'
+
 require 'three_scale/api'
 
 require 'webmock/rspec'
