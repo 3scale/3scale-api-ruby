@@ -822,7 +822,7 @@ module ThreeScale
       # @return [Hash]
       # NOTE: when listing 'templates' the return list can contain objects of type 'partial' and/or 'page'
       # so the subkind parameter can be used to specify which to include in the list returned
-      def list_cms(kind, page, subkind=nil)
+      def list_cms(kind, page, subkind = nil)
         params = { per_page: 100, page: page}.reject { |_, value| value.nil? }
         response = http_client.get("/admin/api/cms/#{kind}s", params: params)
         subkind ||= kind
