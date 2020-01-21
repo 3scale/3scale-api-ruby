@@ -1222,7 +1222,7 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
-  context '#file_update' do
+  context '#update_cms_file' do
     let(:js_file) do
       {
           'tag_list' => [],
@@ -1250,11 +1250,11 @@ RSpec.describe ThreeScale::API::Client do
       local_files = make_local_files
       make_file local_files,'file.js'
       expect(http_client).to receive(:put).with('/admin/api/cms/files/2', any_args).and_return(response)
-      expect(client.file_update('/file.js', '2', '1', 'file.js')).to eq(js_file)
+      expect(client.update_cms_file('/file.js', '2', '1', 'file.js')).to eq(js_file)
     end
   end
 
-  context '#file_create' do
+  context '#create_cms_file' do
     let (:js_file) do
       {
           'tag_list' => [],
@@ -1282,11 +1282,11 @@ RSpec.describe ThreeScale::API::Client do
       local_files = make_local_files
       make_file local_files, 'new-file.js'
       expect(http_client).to receive(:post).with('/admin/api/cms/files', any_args).and_return(response)
-      expect(client.file_create('/new-file.js', '1', 'new-file.js', {})).to eq(js_file)
+      expect(client.create_cms_file('/new-file.js', '1', 'new-file.js', {})).to eq(js_file)
     end
   end
 
-  context '#file_get' do
+  context '#get_cms_file' do
     let (:file) do
       {
           'tag_list' => [],
@@ -1312,7 +1312,7 @@ RSpec.describe ThreeScale::API::Client do
 
     it 'should fetch the correct file by id' do
       expect(http_client).to receive(:get).with('/admin/api/cms/files/3').and_return(response)
-      expect(client.file_get('3')).to eq(file)
+      expect(client.get_cms_file('3')).to eq(file)
     end
   end
 

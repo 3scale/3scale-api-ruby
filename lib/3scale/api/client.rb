@@ -843,7 +843,7 @@ module ThreeScale
       # @param [String] filename The name to give to the created file
       # @param [Array] tag_list A list of tags to associate with the new file
       # Return file object created in the CMS
-      def file_create(path, section_id, filename, tag_list)
+      def create_cms_file(path, section_id, filename, tag_list)
         params = {
             :path => path,
             :section_id => section_id,
@@ -857,7 +857,7 @@ module ThreeScale
       # @api public
       # @param [Fixnum] id Id of the file to get from the CMS API
       # Return file object stored in the CMS with id
-      def file_get(id)
+      def get_cms_file(id)
         response = http_client.get("/admin/api/cms/files/#{id}")
         extract(entity: 'file', from: response)
       end
@@ -868,7 +868,7 @@ module ThreeScale
       # @param [Fixnum] section_id The id of the section to create the file in
       # @param [String] filename The name to give to the created file
       # Return updated file object from the CMS
-      def file_update(path, id, section_id, filename)
+      def update_cms_file(path, id, section_id, filename)
         params = {
             :id => id,       # TODO needed?
             :path => path,
