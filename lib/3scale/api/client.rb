@@ -831,10 +831,54 @@ module ThreeScale
 
       # @api public
       # @param [String] kind Kind of object to list in ['template', 'file', 'section']
-      # @param [Integer] id Id of the object to delete
+      # @param [Fixnum] id Id of the object to delete
       def delete_cms(kind, id)
         http_client.delete("/admin/api/cms/#{kind}s/#{id}")
         true
+      end
+
+      # @api public
+      # @param [String] path Path in the CMS where to create the new file
+      # @param [Fixnum] section_id The id of the section to create the file in
+      # @param [String] filename The name to give to the created file
+      # @param [Array] tag_list A list of tags to associate with the new file
+      # Return file object created in the CMS
+      def file_create(path, section_id, filename, tag_list)
+        params = {
+            :path => path,
+            :section_id => section_id,
+            :tag_list => tag_list,
+            :downloadable => 0,
+            :attachment => File.new(filename)}
+        response = http_client.post("/admin/api/cms/files", params: params)
+        extract(entity: 'file', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] id Id of the file to get from the CMS API
+      # Return file object stored in the CMS with id
+      def file_get(id)
+        response = http_client.get("/admin/api/cms/files/#{id}")
+        extract(entity: 'file', from: response)
+      end
+
+      # @api public
+      # @param [String] path Path of the file to update
+      # @param [Fixnum] id Id of the file to get from the CMS API
+      # @param [Fixnum] section_id The id of the section to create the file in
+      # @param [String] filename The name to give to the created file
+      # Return updated file object from the CMS
+      def file_update(path, id, section_id, filename)
+        params = {
+            :id => id,       # TODO needed?
+            :path => path,
+            :section_id => section_id,
+            :tag_list => {},
+            :downloadable => 0,
+            :attachment => File.new(filename)}
+
+        response = http_client.put("/admin/api/cms/files/#{id}", params: params)
+        extract(entity: 'file', from: response)
       end
 
       protected
@@ -843,9 +887,12 @@ module ThreeScale
         from = from.fetch(collection) if collection
 
         case from
-        when Array then from.map { |e| e.fetch(entity) }
-        when Hash then from.fetch(entity) { from }
-        when nil then nil # raise exception?
+        when Array then
+          from.map { |e| e.fetch(entity) }
+        when Hash then
+          from.fetch(entity) { from }
+        when nil then
+          nil # raise exception?
         else
           raise "unknown #{from}"
         end

@@ -1201,10 +1201,138 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
-  context '#delete_cms_files' do
+  context '#delete_cms_file' do
     it do
       expect(http_client).to receive(:delete).with('/admin/api/cms/files/3')
       expect(client.delete_cms(:file, 3)).to eq(true)
     end
+  end
+
+  context '#delete_cms_section' do
+    it do
+      expect(http_client).to receive(:delete).with('/admin/api/cms/sections/3')
+      expect(client.delete_cms(:section, 3)).to eq(true)
+    end
+  end
+
+  context '#delete_cms_template' do
+    it do
+      expect(http_client).to receive(:delete).with('/admin/api/cms/templates/3')
+      expect(client.delete_cms(:template, 3)).to eq(true)
+    end
+  end
+
+  context '#file_update' do
+    let(:js_file) do
+      {
+          'tag_list' => [],
+          'section_id' => 1710397,
+          'url' => 'https://s3.amazonaws.com/enterprise-multitenant.3scale.net.3scale.net/test_account/2016/06/12/file.js',
+          'path' => '/js/file.js',
+          'title' => 'file.js',
+          'created_at' => '2016-06-12T21:26:13+03:00',
+          'id' => 363531,
+          'links' => [{
+                          'rel' => 'section',
+                          'href' => '/admin/api/cms/sections/1710397'
+                      }],
+          'updated_at' => '2016-06-12T21:26:13+03:00'
+      }
+    end
+
+    let(:response) do
+      {
+          'file' => js_file
+      }
+    end
+
+    it 'should update a file - and return id and updated at', fakefs: true do
+      local_files = make_local_files
+      make_file local_files,'file.js'
+      expect(http_client).to receive(:put).with('/admin/api/cms/files/2', any_args).and_return(response)
+      expect(client.file_update('/file.js', '2', '1', 'file.js')).to eq(js_file)
+    end
+  end
+
+  context '#file_create' do
+    let (:js_file) do
+      {
+          'tag_list' => [],
+          'section_id' => 1710397,
+          'url' => 'https://s3.amazonaws.com/enterprise-multitenant.3scale.net.3scale.net/test_account/2016/06/12/new-file.js',
+          'path' => '/js/new-file.js',
+          'title' => 'new-file.js',
+          'created_at' => '2016-06-12T21:26:13+03:00',
+          'id' => 363531,
+          'links' => [{
+                          'rel' => 'section',
+                          'href' => '/admin/api/cms/sections/1710397'
+                      }],
+          'updated_at' => '2016-06-12T21:26:13+03:00'
+      }
+    end
+
+    let(:response) do
+      {
+          'file' => js_file
+      }
+    end
+
+    it 'should create a file - and return id and updated at', fakefs: true do
+      local_files = make_local_files
+      make_file local_files, 'new-file.js'
+      expect(http_client).to receive(:post).with('/admin/api/cms/files', any_args).and_return(response)
+      expect(client.file_create('/new-file.js', '1', 'new-file.js', {})).to eq(js_file)
+    end
+  end
+
+  context '#file_get' do
+    let (:file) do
+      {
+          'tag_list' => [],
+          'section_id' => 1710397,
+          'url' => 'https://s3.amazonaws.com/enterprise-multitenant.3scale.net.3scale.net/test_account/2016/06/12/animate.min-3107fef295346155.css',
+          'path' => '/css/animate.min.css',
+          'title' => 'animate.min.css',
+          'created_at' => '2016-06-12T21:26:13+03:00',
+          'id' => 363531,
+          'links' => [{
+            'rel' => 'section',
+            'href' => '/admin/api/cms/sections/1710397'
+          }],
+          'updated_at' => '2016-06-12T21:26:13+03:00'
+      }
+    end
+
+    let(:response) do
+      {
+          'file' => file
+      }
+    end
+
+    it 'should fetch the correct file by id' do
+      expect(http_client).to receive(:get).with('/admin/api/cms/files/3').and_return(response)
+      expect(client.file_get('3')).to eq(file)
+    end
+  end
+
+  def make_local_files
+    wd = '/tmp'
+    lf = double 'local_files'
+    # There is a problem with paths in fakefs if working from '/' https://github.com/fakefs/fakefs/issues/339
+    Dir.mkdir wd
+    Dir.chdir wd
+    allow(lf).to receive(:in_list).with('.').and_return(true) # root exists
+    allow(lf).to receive(:is_newer).with('.', anything).and_return(false) # root is older than cms
+    allow(lf).to receive(:directory_entries).and_return([]) # FIXME implementation!
+    lf
+  end
+
+  # Pass `newer` value if need to create a file that is newer/older, than server download
+  def make_file(lf, file_path, newer=true)
+    FileUtils.touch file_path
+    allow(lf).to receive(:in_list).with(file_path).and_return(true)
+    allow(lf).to receive(:is_newer).with(file_path, anything).and_return(newer)
+    allow(lf).to receive(:update).with(file_path, anything)
   end
 end
