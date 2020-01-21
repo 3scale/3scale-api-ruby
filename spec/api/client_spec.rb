@@ -1329,4 +1329,60 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.update_backend_mapping_rule(1, 200, attrs)).to eq(mapping_rule_a)
     end
   end
+
+  context '#list_backend_usages' do
+    let(:backend_usage_a) { { 'id' => 1 } }
+    let(:backend_usage_b) { { 'id' => 2 } }
+    let(:backend_usages) { [backend_usage_a, backend_usage_b] }
+    let(:resp_body) { backend_usages.map { |b| { 'backend_usage' => b } } }
+
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/services/1/backend_usages').and_return(resp_body)
+      expect(client.list_backend_usages(1)).to match_array(backend_usages)
+    end
+  end
+
+  context '#create_backend_usage' do
+    let(:attrs) { { 'path' => '/v1' } }
+    let(:backend_usage_a) { { 'id' => 1 } }
+    let(:response_body) { { 'backend_usage' => backend_usage_a } }
+
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/services/1/backend_usages', body: attrs)
+        .and_return(response_body)
+      expect(client.create_backend_usage(1, attrs)).to eq(backend_usage_a)
+    end
+  end
+
+  context '#delete_backend_usage' do
+    it do
+      expect(http_client).to receive(:delete)
+        .with('/admin/api/services/1/backend_usages/200').and_return(' ')
+      expect(client.delete_backend_usage(1, 200)).to eq(true)
+    end
+  end
+
+  context '#backend_backend_usage' do
+    let(:backend_usage_a) { { 'id' => 1 } }
+    let(:response_body) { { 'backend_usage' => backend_usage_a } }
+    it do
+      expect(http_client).to receive(:get).with('/admin/api/services/1/backend_usages/200')
+                                          .and_return(response_body)
+      expect(client.backend_usage(1, 200)).to eq(backend_usage_a)
+    end
+  end
+
+  context '#update_backend_usage' do
+    let(:attrs) { { 'path' => '/v1' } }
+    let(:backend_usage_a) { { 'id' => 1 } }
+    let(:response_body) { { 'backend_usage' => backend_usage_a } }
+
+    it do
+      expect(http_client).to receive(:put)
+        .with('/admin/api/services/1/backend_usages/200', body: attrs)
+        .and_return(response_body)
+      expect(client.update_backend_usage(1, 200, attrs)).to eq(backend_usage_a)
+    end
+  end
 end

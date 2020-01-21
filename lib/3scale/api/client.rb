@@ -960,7 +960,7 @@ module ThreeScale
 
       # @api public
       # @param [Fixnum] backend_id Backend ID
-      # @param [Hash] attributes Metric attributes
+      # @param [Hash] attrs Metric attributes
       # @return [Hash]
       def create_backend_mapping_rule(backend_id, attrs)
         response = http_client.post("/admin/api/backend_apis/#{backend_id}/mapping_rules",
@@ -994,6 +994,52 @@ module ThreeScale
         response = http_client.put("/admin/api/backend_apis/#{backend_id}/mapping_rules/#{mapping_rule_id}",
                                    body: attributes)
         extract(entity: 'mapping_rule', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] product_id Product ID
+      # @return [List]
+      def list_backend_usages(product_id)
+        response = http_client.get("/admin/api/services/#{product_id}/backend_usages")
+        extract(entity: 'backend_usage', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] product_id Product ID
+      # @param [Hash] attrs Backend Usage attributes
+      # @return [Hash]
+      def create_backend_usage(product_id, attrs)
+        response = http_client.post("/admin/api/services/#{product_id}/backend_usages",
+                                    body: attrs)
+        extract(entity: 'backend_usage', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] product_id Product ID
+      # @param [Fixnum] id Backend Usage ID
+      def delete_backend_usage(product_id, id)
+        http_client.delete("/admin/api/services/#{product_id}/backend_usages/#{id}")
+        true
+      end
+
+      # @api public
+      # @param [Fixnum] product_id Product ID
+      # @param [Fixnum] id Backend Usage ID
+      # @return [Hash]
+      def backend_usage(product_id, id)
+        response = http_client.get("/admin/api/services/#{product_id}/backend_usages/#{id}")
+        extract(entity: 'backend_usage', from: response)
+      end
+
+      # @api public
+      # @param [Fixnum] product_id Product ID
+      # @param [Fixnum] id Backend Usage ID
+      # @param [Hash] attrs Backend Usage attributes
+      # @return [Hash]
+      def update_backend_usage(product_id, id, attrs)
+        response = http_client.put("/admin/api/services/#{product_id}/backend_usages/#{id}",
+                                   body: attrs)
+        extract(entity: 'backend_usage', from: response)
       end
 
       protected
