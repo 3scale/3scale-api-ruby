@@ -3,16 +3,9 @@ module ThreeScale
     class ResponseError < StandardError
       attr_reader :response
 
-      def initialize(response)
+      def initialize(response, message = response.to_s)
+        super(message)
         @response = response
-      end
-
-      def to_s
-        response.to_s
-      end
-
-      def inspect
-        response.inspect
       end
     end
   end

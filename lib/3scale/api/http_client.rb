@@ -77,7 +77,7 @@ module ThreeScale
       end
 
       def unexpected!(response)
-        raise UnexpectedResponseError.new(response)
+        raise UnexpectedResponseError.new(response, response.inspect)
       end
 
       def serialize(body)
