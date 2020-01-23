@@ -58,26 +58,26 @@ module ThreeScale
         when Net::HTTPUnprocessableEntity, Net::HTTPSuccess then parser.decode(response.body)
         when Net::HTTPForbidden then forbidden!(response)
         when Net::HTTPNotFound then notfound!(response)
-        else unexpected!(response.inspect)
+        else unexpected!(response)
         end
       end
 
-      class ForbiddenError < StandardError; end
+      class ForbiddenError < ResponseError; end
 
-      class UnexpectedResponseError < StandardError; end
+      class UnexpectedResponseError < ResponseError; end
 
-      class NotFoundError < StandardError; end
+      class NotFoundError < ResponseError; end
 
       def forbidden!(response)
-        raise ForbiddenError, response
+        raise ForbiddenError.new(response)
       end
 
       def notfound!(response)
-        raise NotFoundError, response
+        raise NotFoundError.new(response)
       end
 
       def unexpected!(response)
-        raise UnexpectedResponseError, response
+        raise UnexpectedResponseError.new(response, response.inspect)
       end
 
       def serialize(body)

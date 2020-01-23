@@ -1,4 +1,5 @@
 require '3scale/api/version'
+require '3scale/api/errors'
 
 module ThreeScale
   module API
