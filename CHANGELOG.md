@@ -5,6 +5,11 @@ This file tries to follow recommendations of [Keep a CHANGELOG](http://keepachan
 
 ## [Unreleased]
 
+## [1.1.0] - 2020-04-17
+
+### Added
+- Pricing rule delete operation [#87](https://github.com/3scale/3scale-api-ruby/pull/87)
+
 ## [1.0.0] - 2020-01-23
 
 ### Added
@@ -154,7 +159,8 @@ This file tries to follow recommendations of [Keep a CHANGELOG](http://keepachan
 - Application Plans List & Create
 - Usage Limits List, Create & Delete
 
-[Unreleased]: https://github.com/3scale/3scale-api-ruby/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/3scale/3scale-api-ruby/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v1.1.0
 [1.0.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v1.0.0
 [0.6.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v0.6.0
 [0.5.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v0.5.0
