@@ -617,6 +617,17 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
+  context '#delete_application_plan_pricingrule' do
+    let(:application_plan_id) { '10' }
+    let(:metric_id) { '20' }
+    let(:id) { '30' }
+    it do
+      expect(http_client).to receive(:delete)
+        .with("/admin/api/application_plans/#{application_plan_id}/metrics/#{metric_id}/pricing_rules/#{id}").and_return(' ')
+      expect(client.delete_application_plan_pricingrule(application_plan_id, metric_id, id)).to eq(true)
+    end
+  end
+
   context '#list_activedocs' do
     let(:api_doc) { { id: '44' } }
     it do

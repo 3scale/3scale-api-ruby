@@ -523,6 +523,16 @@ module ThreeScale
       end
 
       # @api public
+      # @param [Fixnum] application_plan_id Application Plan ID
+      # @param [Fixnum] metric_id Metric ID
+      # @param [Fixnum] id Rule ID
+      # @return [Bool]
+      def delete_application_plan_pricingrule(application_plan_id, metric_id, id)
+        http_client.delete("/admin/api/application_plans/#{application_plan_id}/metrics/#{metric_id}/pricing_rules/#{id}")
+        true
+      end
+
+      # @api public
       # @return [Array<Hash>]
       def list_activedocs
         response = http_client.get('/admin/api/active_docs')
