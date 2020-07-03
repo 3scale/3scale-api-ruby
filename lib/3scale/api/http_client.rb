@@ -68,16 +68,22 @@ module ThreeScale
 
       class NotFoundError < ResponseError; end
 
+      class UnknownFormatError < StandardError; end
+
       def forbidden!(response)
-        raise ForbiddenError.new(response)
+        raise ForbiddenError.new(response, format_response(response))
       end
 
       def notfound!(response)
-        raise NotFoundError.new(response)
+        raise NotFoundError.new(response, format_response(response))
       end
 
       def unexpected!(response)
-        raise UnexpectedResponseError.new(response, response.inspect)
+        raise UnexpectedResponseError.new(response, format_response(response))
+      end
+
+      def unknownformat!
+        raise UnknownFormatError, "unknown format #{format}"
       end
 
       def serialize(body)
@@ -91,7 +97,7 @@ module ThreeScale
       def parser
         case format
         when :json then JSONParser
-        else "unknown format #{format}"
+        else unknownformat!
         end
       end
 
@@ -106,6 +112,16 @@ module ThreeScale
         path = "#{path}.#{format}"
         path << "?#{URI.encode_www_form(params)}" unless params.nil?
         path
+      end
+
+      def format_response(response)
+        body = response.body if text_based?(response)
+        "#{response.inspect} body=#{body}"
+      end
+
+      def text_based?(response)
+        response.content_type =~ /^text/ ||
+          response.content_type =~ /^application/ && !['application/octet-stream', 'application/pdf'].include?(response.content_type)
       end
 
       module JSONParser

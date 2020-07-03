@@ -1,18 +1,36 @@
 RSpec.describe ThreeScale::API::HttpClient do
+  let(:admin_domain) { 'foo-admin.3scale.net' }
+  let(:provider_key) { 'some-key' }
+
   describe '#initialize' do
     subject(:client) do
-      described_class.new(endpoint: 'https://foo-admin.3scale.net',
-                          provider_key: 'some-key')
+      described_class.new(endpoint: "https://#{admin_domain}",
+                          provider_key: provider_key)
     end
 
     it { is_expected.to be }
 
-    it { expect(client.admin_domain).to eq('foo-admin.3scale.net') }
-    it { expect(client.provider_key).to eq('some-key') }
-  end
+    it { expect(client.admin_domain).to eq(admin_domain) }
+    it { expect(client.provider_key).to eq(provider_key) }
 
-  let(:admin_domain) { 'foo-admin.3scale.net' }
-  let(:provider_key) { 'some-key' }
+    describe 'with unexpected format' do
+      let(:client) do
+        described_class.new(endpoint: 'https://foo-admin.3scale.net',
+                            provider_key: 'some-key', format: 'unknown')
+      end
+
+      let!(:stub) do
+        stub_request(:get,  "https://#{admin_domain}/foo.unknown")
+          .with(basic_auth: ['', provider_key])
+          .and_return(body: 'something')
+      end
+
+      subject { client.get('/foo') }
+      it do
+        expect { subject }.to raise_error(ThreeScale::API::HttpClient::UnknownFormatError)
+      end
+    end
+  end
 
   subject(:client) { described_class.new(endpoint: "https://#{admin_domain}", provider_key: provider_key) }
 
@@ -128,5 +146,41 @@ RSpec.describe ThreeScale::API::HttpClient do
     end
 
     it_behaves_like 'fair error handler'
+  end
+
+  describe '#get returns HTTPForbidden' do
+    subject(:client) { described_class.new(endpoint: "https://#{admin_domain}", provider_key: provider_key) }
+
+    let!(:stub) do
+      stub_request(:get,  "https://#{admin_domain}/foo.json")
+        .with(basic_auth: ['', provider_key])
+        .and_return(body: '{"foo":"bar"}',
+                    headers: { 'Content-Type' => 'application/json; charset=utf-8' },
+                    status: 403)
+    end
+
+    subject { client.get('/foo') }
+
+    it do
+      expect { subject }.to raise_error(ThreeScale::API::HttpClient::ForbiddenError, /bar/)
+    end
+  end
+
+  describe '#get returns HTTPNotFound' do
+    subject(:client) { described_class.new(endpoint: "https://#{admin_domain}", provider_key: provider_key) }
+
+    let!(:stub) do
+      stub_request(:get,  "https://#{admin_domain}/foo.json")
+        .with(basic_auth: ['', provider_key])
+        .and_return(body: '{"foo":"bar"}',
+                    headers: { 'Content-Type' => 'application/json; charset=utf-8' },
+                    status: 404)
+    end
+
+    subject { client.get('/foo') }
+
+    it do
+      expect { subject }.to raise_error(ThreeScale::API::HttpClient::NotFoundError, /bar/)
+    end
   end
 end
