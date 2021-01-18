@@ -1,5 +1,8 @@
 module ThreeScale
   module API
+    MAX_BACKENDS_PER_PAGE = 500
+    MAX_SERVICES_PER_PAGE = 500
+
     class Client
       attr_reader :http_client
 
@@ -19,8 +22,8 @@ module ThreeScale
 
       # @api public
       # @return [Array<Hash>]
-      def list_services
-        response = http_client.get('/admin/api/services')
+      def list_services(params = nil)
+        response = http_client.get('/admin/api/services', params: params)
         extract(collection: 'services', entity: 'service', from: response)
       end
 
@@ -828,8 +831,8 @@ module ThreeScale
 
       # @api public
       # @return [List]
-      def list_backends
-        response = http_client.get('/admin/api/backend_apis')
+      def list_backends(params = nil)
+        response = http_client.get('/admin/api/backend_apis', params: params)
         extract(collection: 'backend_apis', entity: 'backend_api', from: response)
       end
 
