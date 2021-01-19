@@ -14,7 +14,7 @@ RSpec.describe ThreeScale::API::Client do
 
   context '#list_services' do
     it do
-      expect(http_client).to receive(:get).with('/admin/api/services').and_return('services' => [])
+      expect(http_client).to receive(:get).with('/admin/api/services', params: nil).and_return('services' => [])
       expect(client.list_services).to eq([])
     end
   end
@@ -1124,7 +1124,7 @@ RSpec.describe ThreeScale::API::Client do
     let(:resp_body) { { 'backend_apis' => backend_apis.map { |b| { 'backend_api' => b } } } }
 
     it do
-      expect(http_client).to receive(:get).with('/admin/api/backend_apis').and_return(resp_body)
+      expect(http_client).to receive(:get).with('/admin/api/backend_apis', params: nil).and_return(resp_body)
       expect(client.list_backends).to match_array(backend_apis)
     end
   end
