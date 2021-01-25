@@ -1396,4 +1396,13 @@ RSpec.describe ThreeScale::API::Client do
       expect(client.update_backend_usage(1, 200, attrs)).to eq(backend_usage_a)
     end
   end
+
+  context '#proxy_deploy' do
+    it do
+      expect(http_client).to receive(:post)
+        .with('/admin/api/services/4/proxy/deploy', body: nil)
+        .and_return('proxy' => {})
+      expect(client.proxy_deploy(4)).to eq({})
+    end
+  end
 end

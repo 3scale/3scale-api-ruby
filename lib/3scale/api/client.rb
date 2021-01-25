@@ -204,6 +204,15 @@ module ThreeScale
       end
 
       # @api public
+      # @return [Hash]
+      # @param [Fixnum] service_id Service ID
+      def proxy_deploy(service_id)
+        response = http_client.post("/admin/api/services/#{service_id}/proxy/deploy",
+                                    body: nil)
+        extract(entity: 'proxy', from: response)
+      end
+
+      # @api public
       # @return [Array<Hash>]
       # @param [Fixnum] service_id Service ID
       def list_mapping_rules(service_id)
