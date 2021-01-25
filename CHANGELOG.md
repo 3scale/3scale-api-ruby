@@ -5,6 +5,9 @@ This file tries to follow recommendations of [Keep a CHANGELOG](http://keepachan
 
 ## [Unreleased]
 
+## [1.4.0] - 2021-01-25
+- Proxy deploy endpoint [#94](https://github.com/3scale/3scale-api-ruby/pull/94)
+
 ## [1.3.0] - 2021-01-20
 - Service and Backend list methods accept query params [#92](https://github.com/3scale/3scale-api-ruby/pull/92)
 
@@ -165,7 +168,8 @@ This file tries to follow recommendations of [Keep a CHANGELOG](http://keepachan
 - Application Plans List & Create
 - Usage Limits List, Create & Delete
 
-[Unreleased]: https://github.com/3scale/3scale-api-ruby/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/3scale/3scale-api-ruby/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v1.4.0
 [1.3.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v1.3.0
 [1.2.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v1.2.0
 [1.1.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v1.1.0
