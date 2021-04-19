@@ -43,6 +43,21 @@ jobs:
       - checkout
       - unittests
 
+  push-rubygems:
+    docker:
+      - image: circleci/ruby:2.6.3-stretch-node
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Setup Rubygems
+          command: bash .circleci/setup-rubygems.sh
+      - run:
+          name: Publish to Rubygems
+          command: |
+            gem build 3scale-api.gemspec -o "3scale-api-$(git describe --tags).gem"
+            gem push "3scale-api-$(git describe --tags).gem"
+
 workflows:
   version: 2
   tests:
@@ -51,6 +66,15 @@ workflows:
           context: autotestaccount
       - ruby-262-unittest:
           context: autotestaccount
+      - push-rubygems:
+          requires:
+            - ruby-255-unittest
+            - ruby-262-unittest
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
 
   nightly:
     triggers:
