@@ -9,3 +9,7 @@ group :development do
   gem 'pry-byebug', platform: :mri
   gem 'yard'
 end
+
+group :test do
+  gem 'codecov', require: false
+end
