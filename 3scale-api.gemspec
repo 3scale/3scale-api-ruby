@@ -7,8 +7,8 @@ require '3scale/api/version'
 Gem::Specification.new do |spec|
   spec.name          = '3scale-api'
   spec.version       = ThreeScale::API::VERSION
-  spec.authors       = ['Michal Cichra', 'Eguzki Astiz Lezaun']
-  spec.email         = ['michal@3scale.net', 'eastizle@redhat.com']
+  spec.authors       = ['Miguel Soriano', 'Eguzki Astiz Lezaun']
+  spec.email         = ['msoriano@redhat.com', 'eastizle@redhat.com']
 
   spec.summary       = 'API Client for 3scale APIs'
   spec.description   = 'API Client to access your 3scale APIs: Account Management API'
