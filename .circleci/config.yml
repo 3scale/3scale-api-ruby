@@ -1,43 +1,61 @@
+---
 version: 2.1
 
+tag-trigger: &tag-trigger
+  tags:
+    only: /^v.*/
+
 commands:
+  setup-bundler:
+    steps:
+      - run:
+          name: setup bundler
+          command: |
+            sudo gem update --system
+            sudo gem uninstall bundler
+            sudo rm /usr/local/bin/bundle || true
+            sudo rm /usr/local/bin/bundler || true
+            sudo gem install bundler --version 2.2.21
+            bundle config set path 'vendor/bundle'
+
   install_dependencies:
     steps:
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "Gemfile" }}
+            - v2-dependencies-{{ checksum "Gemfile" }}
             # fallback to using the latest cache if no exact match is found
-            - v1-dependencies
+            - v2-dependencies
 
       - run:
           name: Install dependencies
           command: |
-            bundle install --jobs=3 --retry=3 --path vendor/bundle
+            bundle install --jobs=3 --retry=3
 
       - save_cache:
-          key: v1-dependencies-{{ checksum "Gemfile" }}
+          key: v2-dependencies-{{ checksum "Gemfile" }}
           paths:
             - ./vendor/bundle
 
   unittests:
     steps:
+      - setup-bundler
       - install_dependencies
       - run:
           name: Run unittests
           command: |
             bundle exec rake
 jobs:
-  ruby-255-unittest:
+  ruby-262-unittest:
     docker:
-      - image: circleci/ruby:2.5.5
+      - image: circleci/ruby:2.6.2
     working_directory: ~/repo
     steps:
       - checkout
       - unittests
 
-  ruby-262-unittest:
+  ruby-270-unittest:
     docker:
-      - image: circleci/ruby:2.6.2
+      - image: circleci/ruby:2.7.0
     working_directory: ~/repo
     steps:
       - checkout
@@ -62,20 +80,22 @@ workflows:
   version: 2
   tests:
     jobs:
-      - ruby-255-unittest:
-          context: autotestaccount
       - ruby-262-unittest:
+          filters:
+            <<: *tag-trigger
+          context: autotestaccount
+      - ruby-270-unittest:
+          filters:
+            <<: *tag-trigger
           context: autotestaccount
       - push-rubygems:
           requires:
-            - ruby-255-unittest
             - ruby-262-unittest
+            - ruby-270-unittest
           filters:
-            tags:
-              only: /^v.*/
+            <<: *tag-trigger
             branches:
               ignore: /.*/
-
   nightly:
     triggers:
       - schedule:
@@ -85,7 +105,7 @@ workflows:
               only:
                 - main
     jobs:
-      - ruby-255-unittest:
-          context: autotestaccount
       - ruby-262-unittest:
+          context: autotestaccount
+      - ruby-270-unittest:
           context: autotestaccount
