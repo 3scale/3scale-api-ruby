@@ -83,7 +83,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
     jobs:
       - ruby-255-unittest:
           context: autotestaccount
