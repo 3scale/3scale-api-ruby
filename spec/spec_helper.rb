@@ -3,7 +3,7 @@ require 'yaml'
 # Codecov
 require 'simplecov'
 SimpleCov.start
-if ENV['CI'] == 'true'
+if ENV['COVERAGE'] == 'true'
   require 'codecov'
   SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end

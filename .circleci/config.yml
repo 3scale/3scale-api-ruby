@@ -45,6 +45,26 @@ commands:
           command: |
             bundle exec rake
 jobs:
+  ruby-262-unittest-coverage:
+    docker:
+      - image: circleci/ruby:2.6.2
+    working_directory: ~/repo
+    environment:
+      COVERAGE: true
+    steps:
+      - checkout
+      - unittests
+
+  ruby-270-unittest-coverage:
+    docker:
+      - image: circleci/ruby:2.7.0
+    working_directory: ~/repo
+    environment:
+      COVERAGE: true
+    steps:
+      - checkout
+      - unittests
+
   ruby-262-unittest:
     docker:
       - image: circleci/ruby:2.6.2
@@ -80,18 +100,18 @@ workflows:
   version: 2
   tests:
     jobs:
-      - ruby-262-unittest:
+      - ruby-262-unittest-coverage:
           filters:
             <<: *tag-trigger
           context: autotestaccount
-      - ruby-270-unittest:
+      - ruby-270-unittest-coverage:
           filters:
             <<: *tag-trigger
           context: autotestaccount
       - push-rubygems:
           requires:
-            - ruby-262-unittest
-            - ruby-270-unittest
+            - ruby-262-unittest-coverage
+            - ruby-270-unittest-coverage
           filters:
             <<: *tag-trigger
             branches:
