@@ -45,6 +45,14 @@ module ThreeScale
       end
 
       # @api public
+      # @param [Fixnum] account_id Account ID
+      # @return [Array<Hash>]
+      def list_applications_by_account(account_id)
+        response = http_client.get("/admin/api/accounts/#{account_id}/applications")
+        extract(collection: 'applications', entity: 'application', from: response)
+      end
+
+      # @api public
       # @return [Hash]
       # @param [Fixnum] id Application ID
       def show_application(id)
