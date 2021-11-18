@@ -5,6 +5,11 @@ This file tries to follow recommendations of [Keep a CHANGELOG](http://keepachan
 
 ## [Unreleased]
 
+## [1.5.0] - 2021-11-18
+- Deprecate ruby 2.5 [#99](https://github.com/3scale/3scale-api-ruby/pull/99)
+- Compute code coverage and push to codecov site [#97](https://github.com/3scale/3scale-api-ruby/pull/97)
+- List applications by account [#102](https://github.com/3scale/3scale-api-ruby/pull/102)
+
 ## [1.4.0] - 2021-01-25
 - Proxy deploy endpoint [#94](https://github.com/3scale/3scale-api-ruby/pull/94)
 
@@ -168,7 +173,8 @@ This file tries to follow recommendations of [Keep a CHANGELOG](http://keepachan
 - Application Plans List & Create
 - Usage Limits List, Create & Delete
 
-[Unreleased]: https://github.com/3scale/3scale-api-ruby/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/3scale/3scale-api-ruby/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v1.4.0
 [1.4.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v1.4.0
 [1.3.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v1.3.0
 [1.2.0]: https://github.com/3scale/3scale-api-ruby/releases/tag/v1.2.0
