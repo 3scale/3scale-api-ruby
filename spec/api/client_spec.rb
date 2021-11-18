@@ -144,6 +144,19 @@ RSpec.describe ThreeScale::API::Client do
     end
   end
 
+  context '#list_applications_by_account' do
+    let(:account_id) { '1001' }
+    let(:app_a) { { 'id' => 1 } }
+    let(:app_b) { { 'id' => 2 } }
+    let(:applications) { [app_a, app_b] }
+    let(:resp_body) { { 'applications' => applications.map { |b| { 'application' => b } } } }
+
+    it do
+      expect(http_client).to receive(:get).with("/admin/api/accounts/#{account_id}/applications").and_return(resp_body)
+      expect(client.list_applications_by_account(account_id)).to match_array(applications)
+    end
+  end
+
   context '#show_application' do
     it do
       expect(http_client).to receive(:get)
