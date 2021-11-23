@@ -183,4 +183,105 @@ RSpec.describe ThreeScale::API::HttpClient do
       expect { subject }.to raise_error(ThreeScale::API::HttpClient::NotFoundError, /bar/)
     end
   end
+
+  describe 'keep alive connections' do
+    let(:client) do
+      described_class.new(endpoint: 'https://foo-admin.3scale.net',
+                          provider_key: 'some-key', keep_alive: true,
+                         )
+    end
+
+    it do
+      expect(client.keep_alive).to be_truthy
+    end
+
+    describe '#get' do
+      let!(:stub) do
+        stub_request(:get, "https://#{admin_domain}/foo.json").and_return(body: '{"foo": "bar"}')
+      end
+
+      subject { client.get('/foo') }
+
+      it 'makes a request' do
+        is_expected.to be
+        expect(stub).to have_been_requested
+      end
+
+      it 'returns body' do
+        is_expected.to eq('foo' => 'bar')
+      end
+    end
+
+    describe '#patch' do
+      let!(:stub) do
+        stub_request(:patch,  "https://#{admin_domain}/foo.json")
+          .and_return(body: '{"foo":"bar"}')
+      end
+
+      subject { client.patch('/foo', body: nil) }
+
+      it 'makes a request' do
+        is_expected.to be
+        expect(stub).to have_been_requested
+      end
+
+      it 'returns body' do
+        is_expected.to eq('foo' => 'bar')
+      end
+    end
+
+    describe '#post' do
+      let!(:stub) do
+        stub_request(:post,  "https://#{admin_domain}/foo.json")
+          .and_return(body: '{"foo":"bar"}')
+      end
+
+      subject { client.post('/foo', body: nil) }
+
+      it 'makes a request' do
+        is_expected.to be
+        expect(stub).to have_been_requested
+      end
+
+      it 'returns body' do
+        is_expected.to eq('foo' => 'bar')
+      end
+    end
+
+    describe '#put' do
+      let!(:stub) do
+        stub_request(:put,  "https://#{admin_domain}/foo.json")
+          .and_return(body: '{"foo":"bar"}')
+      end
+
+      subject { client.put('/foo', body: nil) }
+
+      it 'makes a request' do
+        is_expected.to be
+        expect(stub).to have_been_requested
+      end
+
+      it 'returns body' do
+        is_expected.to eq('foo' => 'bar')
+      end
+    end
+
+    describe '#delete' do
+      let!(:stub) do
+        stub_request(:delete,  "https://#{admin_domain}/foo.json")
+          .and_return(body: '{"foo":"bar"}')
+      end
+
+      subject { client.delete('/foo') }
+
+      it 'makes a request' do
+        is_expected.to be
+        expect(stub).to have_been_requested
+      end
+
+      it 'returns body' do
+        is_expected.to eq('foo' => 'bar')
+      end
+    end
+  end
 end

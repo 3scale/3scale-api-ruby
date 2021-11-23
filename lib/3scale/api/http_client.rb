@@ -6,9 +6,9 @@ require 'openssl'
 module ThreeScale
   module API
     class HttpClient
-      attr_reader :endpoint, :admin_domain, :provider_key, :headers, :format
+      attr_reader :endpoint, :admin_domain, :provider_key, :headers, :format, :keep_alive
 
-      def initialize(endpoint:, provider_key:, format: :json, verify_ssl: true)
+      def initialize(endpoint:, provider_key:, format: :json, verify_ssl: true, keep_alive: false)
         @endpoint = URI(endpoint).freeze
         @admin_domain = @endpoint.host.freeze
         @provider_key = provider_key.freeze
@@ -30,25 +30,37 @@ module ThreeScale
         @headers.freeze
 
         @format = format
+
+        @keep_alive = keep_alive
       end
 
       def get(path, params: nil)
+        @http.start if keep_alive && !@http.started?
+
         parse @http.get(format_path_n_query(path, params), headers)
       end
 
       def patch(path, body:, params: nil)
+        @http.start if keep_alive && !@http.started?
+
         parse @http.patch(format_path_n_query(path, params), serialize(body), headers)
       end
 
       def post(path, body:, params: nil)
+        @http.start if keep_alive && !@http.started?
+
         parse @http.post(format_path_n_query(path, params), serialize(body), headers)
       end
 
       def put(path, body: nil, params: nil)
+        @http.start if keep_alive && !@http.started?
+
         parse @http.put(format_path_n_query(path, params), serialize(body), headers)
       end
 
       def delete(path, params: nil)
+        @http.start if keep_alive && !@http.started?
+
         parse @http.delete(format_path_n_query(path, params), headers)
       end
 
