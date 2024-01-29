@@ -15,24 +15,21 @@ commands:
             sudo gem uninstall bundler
             sudo rm /usr/local/bin/bundle || true
             sudo rm /usr/local/bin/bundler || true
-            sudo gem install bundler --version 2.2.21
-            bundle config set path 'vendor/bundle'
+            sudo gem install bundler --version 2.3.5
 
   install_dependencies:
     steps:
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "Gemfile" }}
+            - v3-dependencies-{{ checksum "Gemfile" }}
             # fallback to using the latest cache if no exact match is found
-            - v2-dependencies
-
+            - v3-dependencies
       - run:
           name: Install dependencies
           command: |
-            bundle install --jobs=3 --retry=3
-
+            bundle install --jobs=3 --retry=3 --path vendor/bundle
       - save_cache:
-          key: v2-dependencies-{{ checksum "Gemfile" }}
+          key: v3-dependencies-{{ checksum "Gemfile" }}
           paths:
             - ./vendor/bundle
 
@@ -45,45 +42,25 @@ commands:
           command: |
             bundle exec rake
 jobs:
-  ruby-262-unittest-coverage:
+  ruby-30-unittest-coverage:
     docker:
-      - image: circleci/ruby:2.6.2
+      - image: cimg/ruby:3.0
     working_directory: ~/repo
     environment:
       COVERAGE: true
     steps:
       - checkout
       - unittests
-
-  ruby-270-unittest-coverage:
+  ruby-30-unittest:
     docker:
-      - image: circleci/ruby:2.7.0
-    working_directory: ~/repo
-    environment:
-      COVERAGE: true
-    steps:
-      - checkout
-      - unittests
-
-  ruby-262-unittest:
-    docker:
-      - image: circleci/ruby:2.6.2
+      - image: cimg/ruby:3.0
     working_directory: ~/repo
     steps:
       - checkout
       - unittests
-
-  ruby-270-unittest:
-    docker:
-      - image: circleci/ruby:2.7.0
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - unittests
-
   push-rubygems:
     docker:
-      - image: circleci/ruby:2.6.3-stretch-node
+      - image: cimg/ruby:3.0
     working_directory: ~/repo
     steps:
       - checkout
@@ -100,18 +77,13 @@ workflows:
   version: 2
   tests:
     jobs:
-      - ruby-262-unittest-coverage:
-          filters:
-            <<: *tag-trigger
-          context: autotestaccount
       - ruby-270-unittest-coverage:
           filters:
             <<: *tag-trigger
           context: autotestaccount
       - push-rubygems:
           requires:
-            - ruby-262-unittest-coverage
-            - ruby-270-unittest-coverage
+            - ruby-30-unittest-coverage
           filters:
             <<: *tag-trigger
             branches:
@@ -125,7 +97,5 @@ workflows:
               only:
                 - main
     jobs:
-      - ruby-262-unittest:
-          context: autotestaccount
-      - ruby-270-unittest:
+      - ruby-30-unittest:
           context: autotestaccount
