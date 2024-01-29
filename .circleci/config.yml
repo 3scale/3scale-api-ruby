@@ -77,7 +77,7 @@ workflows:
   version: 2
   tests:
     jobs:
-      - ruby-270-unittest-coverage:
+      - ruby-30-unittest-coverage:
           filters:
             <<: *tag-trigger
           context: autotestaccount
